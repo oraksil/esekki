@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    name: Test
+    runs-on: ubuntu-18.04
+
+    strategy:
+      matrix:
+        node: ["12.18.2"]
+
+    steps:
+    - uses: Actions-R-Us/default-env@v1
+
+    - uses: actions/checkout@v2
+
+    - name: Cache
+      uses: actions/cache@v2.1.1
+      with:
+        path: |
+          ${{ env.GITHUB_WORKSPACE }}/node_modules
+        key: node-modules
+
+    - name: Use Node.js ${{ matrix.node }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node }}
+
+    - run: npm i
+
+    - run: npm run build --if-present
+
+    - run: npm run typecheck
+
