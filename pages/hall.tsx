@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import Layout from '../components/layout'
 import JoinableGameCard from '../components/joinable-game-card'
+import { wrapper } from '../redux/store'
 
 const Hall = () => {
   const joinableGames = [1, 2, 3, 4, 5, 6, 7, 8]
@@ -26,8 +27,8 @@ const Hall = () => {
 
 export default Hall
 
-export const getStaticProps = async () => {
+export const getStaticProps = wrapper.getStaticProps(async (store) => {
   return {
     props: {},
   }
-}
+})

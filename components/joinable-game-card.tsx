@@ -12,7 +12,7 @@ const JoinableGameCard = () => {
         </div>      
 
         <img className="cover-image w-full h-28 object-center object-cover"
-          src="https://tailwindcss.com/img/tailwind-ui-sidebar.png" />
+            src="https://i.ytimg.com/vi/IWyS18Yf9J0/hqdefault.jpg" />
 
         <div className="p-2">
           <div className="text-sm">

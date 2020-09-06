@@ -1,5 +1,6 @@
 import React from 'react'
 import { ServerResponse } from 'http'
+import { wrapper } from '../redux/store'
 
 const Index = () => {
   return (
@@ -11,8 +12,8 @@ const Index = () => {
 
 export default Index
 
-export const getServerSideProps = async ({ res }: { res: ServerResponse }) => {
+export const getServerSideProps = wrapper.getServerSideProps(async ({ res }: { res: ServerResponse }) => {
   res.writeHead(301, { Location: "catalog" })
   res.end()
   return {}
-}
+})

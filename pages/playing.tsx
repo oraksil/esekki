@@ -1,6 +1,7 @@
 import Layout from '../components/layout'
 import Head from 'next/head'
 import GamePlayer from '../components/game-player'
+import { wrapper } from '../redux/store'
 
 const Playing = () => {
   return (
@@ -19,8 +20,8 @@ const Playing = () => {
 
 export default Playing
 
-export const getStaticProps = async () => {
+export const getStaticProps = wrapper.getStaticProps(async ({ store }) => {
   return {
     props: {},
   }
-}
+})

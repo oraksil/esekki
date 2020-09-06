@@ -5,7 +5,7 @@ const PlayableGameCard = () => {
   return (
     <div className={styles['card-frame']}>
       <img className="cover-image w-full h-40 object-center object-cover"
-        src="https://tailwindcss.com/img/tailwind-ui-sidebar.png" />
+        src="https://i.ytimg.com/vi/IWyS18Yf9J0/hqdefault.jpg" />
 
       <div className="relative">
         <div className={styles['btn-container']}>

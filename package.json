@@ -1,5 +1,5 @@
 {
-  "name": "blog-starter-typescript",
+  "name": "oraksil-front",
   "version": "1.0.0",
   "scripts": {
     "dbg": "NODE_OPTIONS='--inspect' next",
@@ -13,8 +13,13 @@
     "date-fns": "2.10.0",
     "gray-matter": "4.0.2",
     "next": "latest",
+    "next-redux-wrapper": "^6.0.2",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
+    "react-redux": "^7.2.1",
+    "redux": "^4.0.5",
+    "redux-logger": "^3.0.6",
+    "redux-thunk": "^2.3.0",
     "remark": "11.0.2",
     "typescript": "^3.9.2"
   },
@@ -25,6 +30,8 @@
     "@types/node": "^14.0.22",
     "@types/react": "^16.9.42",
     "@types/react-dom": "^16.9.8",
+    "@types/react-redux": "^7.1.9",
+    "@types/redux-logger": "^3.0.8",
     "postcss-preset-env": "^6.7.0",
     "tailwindcss": "^1.4.0"
   }
