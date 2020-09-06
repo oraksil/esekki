@@ -2,7 +2,7 @@ import { createStore, applyMiddleware, combineReducers } from 'redux'
 import { MakeStore, createWrapper } from 'next-redux-wrapper'
 import createSagaMiddleware from 'redux-saga' 
 import thunk from 'redux-thunk'
-import logger from 'redux-logger'
+import { composeWithDevTools } from 'redux-devtools-extension';
 
 import { commonReducer } from './common/reducers'
 import mySaga from './common/sagas'
@@ -15,10 +15,14 @@ type RootState = ReturnType<typeof rootReducer>
 
 const sagaMiddleware = createSagaMiddleware()
 
+const composeEnhancers = composeWithDevTools({
+  // Specify name here, actionsBlacklist, actionsCreators and other options if needed
+})
+
 export const makeStore: MakeStore<RootState> = () => {
   const store = createStore(
     rootReducer,
-    applyMiddleware(logger, thunk, sagaMiddleware)
+    composeEnhancers(applyMiddleware(thunk, sagaMiddleware))
   )
 
   sagaMiddleware.run(mySaga)
