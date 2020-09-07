@@ -34,7 +34,7 @@ const createPeerConnection = (): RTCPeerConnection => {
 }
 
 function* handleSdpExchange(peer: RTCPeerConnection) {
-  const handler = () => new Promise(resolve => {
+  const sdpExchange = () => new Promise(resolve => {
     peer.onnegotiationneeded = evt => {
       const offerOpt = {
         iceRestart: true,
@@ -53,12 +53,12 @@ function* handleSdpExchange(peer: RTCPeerConnection) {
     }
   })
 
-  yield call(handler) 
+  yield call(sdpExchange) 
   yield put(sdpExchangeDone())
 }
 
 function* handleIceExchange(peer: RTCPeerConnection) {
-  const handler = () => new Promise(resolve => {
+  const iceExchange = () => new Promise(resolve => {
     peer.onicecandidate = evt => {
       if (evt.candidate) {
         // TODO: send my ice candidate to remote
@@ -69,8 +69,18 @@ function* handleIceExchange(peer: RTCPeerConnection) {
       resolve()
     }
   })
+  
+  let pollerHandle!: NodeJS.Timeout
+  const remoteIceCandidatesPoller = () => {
+    // TODO: fetch remote ice candidates
+    // and set them to peer connection
 
-  yield call(handler)
+    // if remote ice candidates set up properly clear interval
+    // clearInterval(pollerHandle)
+  }
+  pollerHandle = setInterval(remoteIceCandidatesPoller, 5000)
+  
+  yield call(iceExchange)
   yield put(iceExchangeDone())
 }
 
@@ -99,18 +109,6 @@ const createDataChannel = (peer: RTCPeerConnection): RTCDataChannel => {
   return dc
 }
 
-const pollRemoteIceCandidates = (peer: RTCPeerConnection) => {
-  const poll = () => {
-    // TODO: fetch remote ice candidates
-    // and set them to peer connection
-
-    // if remote ice candidates set up properly clear interval
-    clearInterval(pollerHandle)
-  }
-
-  var pollerHandle = setInterval(poll, 5000)
-}
-
 function* setupSession(action: SetupSessionAction) {
   let peer!: RTCPeerConnection
   let dc!: RTCDataChannel
@@ -125,8 +123,6 @@ function* setupSession(action: SetupSessionAction) {
     yield fork(handleIceExchange, peer)
 
     yield fork(handleTrackStream, peer)
-
-    pollRemoteIceCandidates(peer)
 
   } catch (e) {
     console.log(e)
