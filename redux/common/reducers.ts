@@ -6,7 +6,7 @@ const initialState: CommonState = {
   myName: 'oraksil'
 }
 
-export const commonReducer = (state: CommonState = initialState, action: AnyAction) => {
+export const reducer = (state: CommonState = initialState, action: AnyAction) => {
   switch (action.type) {
     case HYDRATE:
       return { initialState, ...action.payload.common }
