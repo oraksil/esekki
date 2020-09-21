@@ -10,7 +10,7 @@ import {
 const initialState: WebRTCState = {
 }
 
-export const reducer = (state: WebRTCState = initialState, action: AnyAction) => {
+export const reducer = (state: WebRTCState = initialState, action: AnyAction): WebRTCState => {
   switch (action.type) {
     case HYDRATE:
       return state

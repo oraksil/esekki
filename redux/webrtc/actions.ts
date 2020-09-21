@@ -7,10 +7,10 @@ import {
   WebRTCActionTypes
 } from './types'
 
-export const setupSession = (): WebRTCActionTypes => {
+export const setupSession = (gameId: number): WebRTCActionTypes => {
   return {
     type: SETUP_SESSION,
-    payload: {}
+    payload: { gameId }
   }
 }
 

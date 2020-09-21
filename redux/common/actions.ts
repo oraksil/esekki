@@ -1,29 +1,31 @@
 import { Dispatch } from 'redux'
-import { GET_MY_NAME, GET_MY_NAME_OK, GET_MY_NAME_FAILED, CommonActionTypes } from './types'
+import axios from 'axios'
 
-export const getMyName = (playerId: string): CommonActionTypes => {
+import { Game } from '../../types/game'
+
+import {
+  START_NEW_GAME_OK,
+  START_NEW_GAME_FAILED
+} from './types'
+
+const startNewGameOk = (game: Game) => {
   return {
-    type: GET_MY_NAME,
-    payload: { playerId }
+    type: START_NEW_GAME_OK,
+    payload: game
   }
 }
 
-export const getMyNameOk = (myName: string): CommonActionTypes => {
+const startNewGameFailed = (reject: any) => {
   return {
-    type: GET_MY_NAME_OK,
-    payload: { myName }
+    type: START_NEW_GAME_FAILED,
+    payload: reject
   }
 }
 
-export const getMyNameFailed = (message: string): CommonActionTypes => {
-  return {
-    type: GET_MY_NAME_OK,
-    message
-  }
+export const startNewGame = (packId: number) => (dispatch: Dispatch) => {
+  axios.post(`/api/v1/packs/${packId}/new`)
+    .then(res => { dispatch(startNewGameOk(res.data.data)) } )
+    .catch(reject => { dispatch(startNewGameFailed(reject)) })
 }
 
-export const getMyNameAsync = (playerId: string) => (dispatch: Dispatch) => {
-  setTimeout(() => {
-    dispatch(getMyName(playerId))
-  }, 5000)
-}
+

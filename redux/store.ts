@@ -15,7 +15,7 @@ const rootReducer = combineReducers({
   webrtc: webrtcReducer
 })
 
-type RootState = ReturnType<typeof rootReducer>
+export type RootState = ReturnType<typeof rootReducer>
 
 const sagaMiddleware = createSagaMiddleware()
 

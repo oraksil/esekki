@@ -11,7 +11,7 @@ export const MEDIA_STREAM_OPEN = 'MEDIA_STREAM_OPEN'
 
 export interface SetupSessionAction {
   type: typeof SETUP_SESSION
-  payload: {}
+  payload: { gameId: number }
 }
 
 export interface IceExchangeDoneAction {

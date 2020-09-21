@@ -1,3 +1,5 @@
+import axios from 'axios'
+
 import {
   fork,
   call,
@@ -21,6 +23,8 @@ import {
 
 import { WebRTCSession } from '../../lib/webrtcsession'
 
+import { SdpInfo, IceCandidate } from '../../types/signaling'
+
 const createPeerConnection = (): RTCPeerConnection => {
 	const peer = new RTCPeerConnection({
     iceServers: [
@@ -33,7 +37,7 @@ const createPeerConnection = (): RTCPeerConnection => {
   return peer
 }
 
-function* handleSdpExchange(peer: RTCPeerConnection) {
+function* handleSdpExchange(peer: RTCPeerConnection, gameId: number) {
   const sdpExchange = () => new Promise(resolve => {
     peer.onnegotiationneeded = evt => {
       const offerOpt = {
@@ -44,11 +48,20 @@ function* handleSdpExchange(peer: RTCPeerConnection) {
 
       peer.createOffer(offerOpt).then(d => {
         peer.setLocalDescription(d)
-        // TODO: send my description to remote
+  
+        // send my description to remote
         // and get remote answer via response,
         // and then set remote description
-
-        resolve()
+        const b64EncodedOffer = btoa(JSON.stringify(d))
+        const payload = { 'sdp_offer': b64EncodedOffer }
+        axios.post(`/api/v1/games/${gameId}/signaling/sdp`, payload)
+          .then(res => {
+            const sdpInfo: SdpInfo = res.data.data
+            const sdpAnswer = JSON.parse(atob(sdpInfo.sdp))
+            peer.setRemoteDescription(sdpAnswer)
+            resolve()
+          })
+          .catch(reject => {})
       })
     }
   })
@@ -57,28 +70,49 @@ function* handleSdpExchange(peer: RTCPeerConnection) {
   yield put(sdpExchangeDone())
 }
 
-function* handleIceExchange(peer: RTCPeerConnection) {
+function* handleIceExchange(peer: RTCPeerConnection, gameId: number) {
   const iceExchange = () => new Promise(resolve => {
     peer.onicecandidate = evt => {
       if (evt.candidate) {
-        // TODO: send my ice candidate to remote
+        // send my ice candidate to remote
+        const b64EncodedIce = btoa(JSON.stringify(evt.candidate))
+        const payload = { 'ice_candidate': b64EncodedIce }
+        axios.post(`/api/v1/games/${gameId}/signaling/ice`, payload)
       }
     }
 
     peer.oniceconnectionstatechange = evt => {
+      console.log(evt)
       resolve()
     }
   })
   
   let pollerHandle!: NodeJS.Timeout
-  const remoteIceCandidatesPoller = () => {
-    // TODO: fetch remote ice candidates
-    // and set them to peer connection
+  let lastSeq = 0
 
-    // if remote ice candidates set up properly clear interval
-    // clearInterval(pollerHandle)
+  const remoteIceCandidatesPoller = () => {
+    // fetch remote ice candidates
+    // and set them to peer connection
+    const params = { last_seq: lastSeq }
+    axios.get(`/api/v1/games/${gameId}/signaling/ice`, { params })
+      .then(res => {
+        const candidate: IceCandidate = res.data.data
+        if (candidate === undefined) {
+          return
+        }
+
+        if (candidate.ice === '') {
+          clearInterval(pollerHandle)
+          return
+        }
+
+        const parsedIce = JSON.parse(atob(candidate.ice))
+        peer.addIceCandidate(parsedIce)
+
+        lastSeq = candidate.seq
+      })
   }
-  pollerHandle = setInterval(remoteIceCandidatesPoller, 5000)
+  pollerHandle = setInterval(remoteIceCandidatesPoller, 1000)
   
   yield call(iceExchange)
   yield put(iceExchangeDone())
@@ -118,9 +152,9 @@ function* setupSession(action: SetupSessionAction) {
 
     dc = createDataChannel(peer)
 
-    yield fork(handleSdpExchange, peer)
+    yield fork(handleSdpExchange, peer, action.payload.gameId)
 
-    yield fork(handleIceExchange, peer)
+    yield fork(handleIceExchange, peer, action.payload.gameId)
 
     yield fork(handleTrackStream, peer)
 
