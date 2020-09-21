@@ -96,20 +96,24 @@ function* handleIceExchange(peer: RTCPeerConnection, gameId: number) {
     const params = { last_seq: lastSeq }
     axios.get(`/api/v1/games/${gameId}/signaling/ice`, { params })
       .then(res => {
-        const candidate: IceCandidate = res.data.data
-        if (candidate === undefined) {
-          return
-        }
+        let shouldStopPolling = false
 
-        if (candidate.ice === '') {
+        const candidates: Array<IceCandidate> = res.data.data
+        candidates.forEach(c => {
+          if (c.ice === '') {
+            shouldStopPolling = true
+            return
+          }
+
+          const parsedIce = JSON.parse(atob(c.ice))
+          peer.addIceCandidate(parsedIce)
+
+          lastSeq = c.seq
+        })
+
+        if (shouldStopPolling) {
           clearInterval(pollerHandle)
-          return
         }
-
-        const parsedIce = JSON.parse(atob(candidate.ice))
-        peer.addIceCandidate(parsedIce)
-
-        lastSeq = candidate.seq
       })
   }
   pollerHandle = setInterval(remoteIceCandidatesPoller, 1000)
