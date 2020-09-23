@@ -1,28 +1,9 @@
 import axios from 'axios'
-
-import {
-  fork,
-  call,
-  put,
-  takeEvery,
-  takeLatest
-} from 'redux-saga/effects'
-
-import {
-  SETUP_SESSION,
-  SEND_MESSAGE,
-  SetupSessionAction,
-  SendMessageAction
-} from './types'
-
-import {
-  iceExchangeDone,
-  sdpExchangeDone,
-  mediaStreamOpen
-} from './actions'
-
+import { fork, call, put, takeLatest } from 'redux-saga/effects'
 import { WebRTCSession } from '../../lib/webrtcsession'
 
+import { SETUP_SESSION, SetupSessionAction } from './types'
+import { iceExchangeDone, sdpExchangeDone, mediaStreamOpen } from './actions'
 import { SdpInfo, IceCandidate } from '../../types/signaling'
 
 const createPeerConnection = (): RTCPeerConnection => {
@@ -39,7 +20,7 @@ const createPeerConnection = (): RTCPeerConnection => {
 
 function* handleSdpExchange(peer: RTCPeerConnection, gameId: number) {
   const sdpExchange = () => new Promise(resolve => {
-    peer.onnegotiationneeded = evt => {
+    peer.onnegotiationneeded = () => {
       const offerOpt = {
         iceRestart: true,
         offerToReceiveVideo: true,
@@ -175,12 +156,8 @@ function* setupSession(action: SetupSessionAction) {
   }
 }
 
-function* sendMessage(action: SendMessageAction) {
-}
-
 function* webrtcSaga() {
   yield takeLatest(SETUP_SESSION, setupSession)
-  yield takeEvery(SEND_MESSAGE, sendMessage)
 }
 
 export default webrtcSaga

@@ -1,13 +1,27 @@
 import styles from './game-player.module.css'
 import Icon from './icon'
+import React, { useEffect, useRef } from 'react'
 
-const GamePlayer = () => {
+interface Props {
+  stream?: MediaStream
+}
+
+const GamePlayer = (props: Props) => {
+  const videoRef = useRef<HTMLVideoElement>(null)
+
+  useEffect(() => {
+    if (props.stream && videoRef.current) {
+      const node = videoRef.current
+      node.srcObject = props.stream
+      node.volume = 0.2
+      node.play()
+    }
+  }, [props.stream])
+
   return (
     <div className={styles['player-frame']}>
       <div className={styles['player']}>
-        <video className="w-full h-full bg-purple-400" autoPlay={true}> 
-          <source src="http://techslides.com/demos/sample-videos/small.webm" type="video/webm" /> 
-        </video>
+        <video ref={videoRef} className="w-full h-full bg-purple-400" autoPlay={true} playsInline></video>
       </div>
       <div className={styles['player-ctl']}>
         <div className="absolute left-0 top-0 h-full px-2">
