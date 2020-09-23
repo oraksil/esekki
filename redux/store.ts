@@ -2,16 +2,20 @@ import { createStore, applyMiddleware, combineReducers } from 'redux'
 import { MakeStore, createWrapper } from 'next-redux-wrapper'
 import createSagaMiddleware from 'redux-saga' 
 import thunk from 'redux-thunk'
-import { composeWithDevTools } from 'redux-devtools-extension';
+import { composeWithDevTools } from 'redux-devtools-extension'
 
-import { commonReducer } from './common/reducers'
+import { reducer as commonReducer } from './common/reducers'
+import { reducer as webrtcReducer } from './webrtc/reducers'
+
 import mySaga from './common/sagas'
+import webrtcSaga from './webrtc/sagas'
 
 const rootReducer = combineReducers({
-  common: commonReducer
+  common: commonReducer,
+  webrtc: webrtcReducer
 })
 
-type RootState = ReturnType<typeof rootReducer>
+export type RootState = ReturnType<typeof rootReducer>
 
 const sagaMiddleware = createSagaMiddleware()
 
@@ -20,12 +24,13 @@ const composeEnhancers = composeWithDevTools({
 })
 
 export const makeStore: MakeStore<RootState> = () => {
-  const store = createStore(
+  const store: any = createStore(
     rootReducer,
     composeEnhancers(applyMiddleware(thunk, sagaMiddleware))
   )
 
-  sagaMiddleware.run(mySaga)
+  store.mySaga = sagaMiddleware.run(mySaga)
+  store.webrtcSaga = sagaMiddleware.run(webrtcSaga)
 
   return store
 }

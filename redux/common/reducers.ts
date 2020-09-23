@@ -1,19 +1,25 @@
 import { AnyAction } from 'redux'
 import { HYDRATE } from 'next-redux-wrapper'
-import { CommonState, GET_MY_NAME, GET_MY_NAME_OK, GET_MY_NAME_FAILED } from './types'
+import {
+  CommonState,
+  START_NEW_GAME_OK,
+  START_NEW_GAME_FAILED
+} from './types'
 
 const initialState: CommonState = {
-  myName: 'oraksil'
+  game: {
+    current: null
+  }
 }
 
-export const commonReducer = (state: CommonState = initialState, action: AnyAction) => {
+export const reducer = (state: CommonState = initialState, action: AnyAction): CommonState => {
   switch (action.type) {
     case HYDRATE:
-      return { initialState, ...action.payload.common }
-    case GET_MY_NAME_OK:
-      return { myName: action.payload.myName}
-    case GET_MY_NAME_FAILED:
-      return state
+      return { ...state, ...action.payload.common }
+    case START_NEW_GAME_OK:
+      return { ...state, game: { current: action.payload } }
+    case START_NEW_GAME_FAILED:
+      return { ...state, game: { current: null } }
     default:
       return state
   }
