@@ -3,7 +3,7 @@ import Head from 'next/head'
 import GamePlayer from '../components/game-player'
 import React from 'react'
 
-import { useEffect, useState, KeyboardEvent } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { wrapper, RootState } from '../redux/store'
 import { startNewGame } from '../redux/common/actions'
@@ -31,7 +31,9 @@ const Playing = () => {
 
   useEffect(() => {
     if (curGame) {
-      dispatch(setupSession(curGame.id))
+      setTimeout(() => {
+        dispatch(setupSession(curGame.id))
+      }, 20000)
     }
   }, [curGame]) 
 

@@ -9,7 +9,8 @@ import { SdpInfo, IceCandidate } from '../../types/signaling'
 const createPeerConnection = (): RTCPeerConnection => {
 	const peer = new RTCPeerConnection({
     iceServers: [
-      { urls: "stun:stun.l.google.com:19302" }
+      { urls: 'stun:stun.l.google.com:19302' },
+      { urls: 'turn:211.107.108.230:3478?transport=tcp', username: 'gamz', credential: 'gamz' }
 		]
 	})
   
