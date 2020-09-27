@@ -1,6 +1,5 @@
 import {
   SETUP_SESSION,
-  SEND_MESSAGE,
   ICE_EXCHANGE_DONE,
   SDP_EXCHANGE_DONE,
   MEDIA_STREAM_OPEN,
@@ -31,13 +30,6 @@ export const sdpExchangeDone = (): WebRTCActionTypes => {
 export const mediaStreamOpen = (): WebRTCActionTypes => {
   return {
     type: MEDIA_STREAM_OPEN,
-    payload: {}
-  }
-}
-
-export const sendMessage = (): WebRTCActionTypes => {
-  return {
-    type: SEND_MESSAGE,
     payload: {}
   }
 }

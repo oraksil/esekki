@@ -8,6 +8,7 @@ import {
 } from './types'
 
 const initialState: WebRTCState = {
+  mediaStreamOpen: false
 }
 
 export const reducer = (state: WebRTCState = initialState, action: AnyAction): WebRTCState => {
@@ -19,7 +20,7 @@ export const reducer = (state: WebRTCState = initialState, action: AnyAction): W
     case ICE_EXCHANGE_DONE:
       return state
     case MEDIA_STREAM_OPEN:
-      return state
+      return { ...state, mediaStreamOpen: true }
     default:
       return state
   }
