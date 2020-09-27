@@ -1,10 +1,13 @@
 import axios from 'axios'
+import retry from 'async-retry'
+
 import { fork, call, put, takeLatest } from 'redux-saga/effects'
 import { WebRTCSession } from '../../lib/webrtcsession'
 
 import { SETUP_SESSION, SetupSessionAction } from './types'
 import { iceExchangeDone, sdpExchangeDone, mediaStreamOpen } from './actions'
 import { SdpInfo, IceCandidate } from '../../types/signaling'
+import { Jsend } from '../../types/jsend'
 
 const createPeerConnection = (): RTCPeerConnection => {
 	const peer = new RTCPeerConnection({
@@ -36,14 +39,18 @@ function* handleSdpExchange(peer: RTCPeerConnection, gameId: number) {
         // and then set remote description
         const b64EncodedOffer = btoa(JSON.stringify(d))
         const payload = { 'sdp_offer': b64EncodedOffer }
-        axios.post(`/api/v1/games/${gameId}/signaling/sdp`, payload)
-          .then(res => {
-            const sdpInfo: SdpInfo = res.data.data
-            const sdpAnswer = JSON.parse(atob(sdpInfo.sdp))
-            peer.setRemoteDescription(sdpAnswer)
-            resolve()
-          })
-          .catch(reject => {})
+        retry(async () => {
+          const res = await axios.post(`/api/v1/games/${gameId}/signaling/sdp`, payload)
+          const jsend: Jsend = res.data
+          if (jsend.status === 'fail') {
+            console.log('retrying..')
+            throw new Error('offering sdp failed, retrying..')
+          }
+
+          const sdpInfo: SdpInfo = jsend.data
+          const sdpAnswer = JSON.parse(atob(sdpInfo.sdp))
+          peer.setRemoteDescription(sdpAnswer)
+        }, { retries: 7, minTimeout: 4000, factor: 1 }).then(() => resolve())
       })
     }
   })
@@ -98,7 +105,7 @@ function* handleIceExchange(peer: RTCPeerConnection, gameId: number) {
         }
       })
   }
-  pollerHandle = setInterval(remoteIceCandidatesPoller, 1000)
+  pollerHandle = setInterval(remoteIceCandidatesPoller, 2000)
   
   yield call(iceExchange)
   yield put(iceExchangeDone())

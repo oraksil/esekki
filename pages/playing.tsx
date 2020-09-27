@@ -31,9 +31,7 @@ const Playing = () => {
 
   useEffect(() => {
     if (curGame) {
-      setTimeout(() => {
-        dispatch(setupSession(curGame.id))
-      }, 20000)
+      dispatch(setupSession(curGame.id))
     }
   }, [curGame]) 
 
