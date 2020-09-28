@@ -3,9 +3,11 @@
   "version": "1.0.0",
   "scripts": {
     "dbg": "NODE_OPTIONS='--inspect' next",
-    "dev": "next",
+    "dev2": "next",
+    "dev": "NODE_ENV=development PORT=3000 node server.js",
     "build": "next build",
-    "start": "next start",
+    "start2": "next start",
+    "start": "NODE_ENV=production PORT=3000 node server.js",
     "typecheck": "tsc"
   },
   "dependencies": {
@@ -13,6 +15,7 @@
     "axios": "^0.20.0",
     "classnames": "2.2.6",
     "date-fns": "2.10.0",
+    "express": "^4.17.1",
     "gray-matter": "4.0.2",
     "next": "latest",
     "next-redux-wrapper": "^6.0.2",
@@ -37,6 +40,7 @@
     "@types/react-dom": "^16.9.8",
     "@types/react-redux": "^7.1.9",
     "@types/redux-logger": "^3.0.8",
+    "http-proxy-middleware": "^1.0.5",
     "postcss-preset-env": "^6.7.0",
     "tailwindcss": "^1.4.0"
   }
