@@ -1,12 +1,34 @@
 import { Dispatch } from 'redux'
 import axios from 'axios'
 
-import { Game } from '../../types/game'
+import { Game, Player } from '../../types/game'
 
 import {
+  NEW_PLAYER_OK,
+  NEW_PLAYER_FAILED,
   START_NEW_GAME_OK,
   START_NEW_GAME_FAILED
 } from './types'
+
+const newPlayerOk = (player: Player) => {
+  return {
+    type: NEW_PLAYER_OK,
+    payload: player
+  }
+}
+
+const newPlayerFailed = (reject: any) => {
+  return {
+    type: NEW_PLAYER_FAILED,
+    payload: reject
+  }
+}
+
+export const newPlayer = (name: string) => (dispatch: Dispatch) => {
+  axios.post(`/api/v1/players/new`, { name })
+    .then(res => { dispatch(newPlayerOk(res.data.data)) } )
+    .catch(reject => { dispatch(newPlayerFailed(reject)) })
+}
 
 const startNewGameOk = (game: Game) => {
   return {
