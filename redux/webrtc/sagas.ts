@@ -12,8 +12,8 @@ import { Jsend } from '../../types/jsend'
 const createPeerConnection = (): RTCPeerConnection => {
 	const peer = new RTCPeerConnection({
     iceServers: [
-      { urls: 'stun:stun.l.google.com:19302' },
-      { urls: 'turn:211.107.108.230:3478?transport=tcp', username: 'gamz', credential: 'gamz' }
+      { urls: 'stun:stun.l.google.com:19302' }
+      // { urls: 'turn:211.107.108.230:3478?transport=tcp', username: 'gamz', credential: 'gamz' }
 		]
 	})
   
@@ -23,6 +23,23 @@ const createPeerConnection = (): RTCPeerConnection => {
 }
 
 function* handleSdpExchange(peer: RTCPeerConnection, gameId: number) {
+  const exchangeSdp = async (offerDesc: RTCSessionDescriptionInit) => {
+    const b64EncodedOffer = btoa(JSON.stringify(offerDesc))
+    const payload = { 'sdp_offer': b64EncodedOffer }
+
+    const res = await axios.post(`/api/v1/games/${gameId}/signaling/sdp`, payload)
+    const jsend: Jsend = res.data
+    if (jsend.status === 'fail' || (jsend.data as SdpInfo).sdp === '') {
+      throw Error('got invalid sdp, retrying..')
+    }
+
+    const sdpInfo: SdpInfo = jsend.data
+    peer.setLocalDescription(offerDesc)
+
+    const sdpAnswer = JSON.parse(atob(sdpInfo.sdp))
+    peer.setRemoteDescription(sdpAnswer)
+  }
+
   const sdpExchange = () => new Promise(resolve => {
     peer.onnegotiationneeded = () => {
       const offerOpt = {
@@ -31,26 +48,15 @@ function* handleSdpExchange(peer: RTCPeerConnection, gameId: number) {
         offerToReceiveAudio: true
       }
 
-      peer.createOffer(offerOpt).then(d => {
-        peer.setLocalDescription(d)
-  
+      peer.createOffer(offerOpt).then(d => { 
         // send my description to remote
         // and get remote answer via response,
         // and then set remote description
-        const b64EncodedOffer = btoa(JSON.stringify(d))
-        const payload = { 'sdp_offer': b64EncodedOffer }
-        retry(async () => {
-          const res = await axios.post(`/api/v1/games/${gameId}/signaling/sdp`, payload)
-          const jsend: Jsend = res.data
-          if (jsend.status === 'fail') {
-            console.log('retrying..')
-            throw new Error('offering sdp failed, retrying..')
-          }
-
-          const sdpInfo: SdpInfo = jsend.data
-          const sdpAnswer = JSON.parse(atob(sdpInfo.sdp))
-          peer.setRemoteDescription(sdpAnswer)
-        }, { retries: 7, minTimeout: 4000, factor: 1 }).then(() => resolve())
+        const retryOpt = { retries: 3, minTimeout: 4000, factor: 1 }
+        retry((bail, attempt) => {
+          console.log(`retrying at attempt ${attempt}`)
+          exchangeSdp(d)
+        }, retryOpt).then(resolve)
       })
     }
   })
@@ -71,42 +77,47 @@ function* handleIceExchange(peer: RTCPeerConnection, gameId: number) {
     }
 
     peer.oniceconnectionstatechange = evt => {
-      console.log(evt)
-      resolve()
+      if ((evt.target as RTCPeerConnection).iceConnectionState === 'connected') {
+        resolve()
+      }
     }
   })
   
-  let pollerHandle!: NodeJS.Timeout
   let lastSeq = 0
 
-  const remoteIceCandidatesPoller = () => {
+  const remoteIceCandidatesPoller = async () => {
     // fetch remote ice candidates
     // and set them to peer connection
     const params = { last_seq: lastSeq }
-    axios.get(`/api/v1/games/${gameId}/signaling/ice`, { params })
-      .then(res => {
-        let shouldStopPolling = false
+    const res = await axios.get(`/api/v1/games/${gameId}/signaling/ice`, { params })
 
-        const candidates: Array<IceCandidate> = res.data.data
-        candidates.forEach(c => {
-          if (c.ice === '') {
-            shouldStopPolling = true
-            return
-          }
+    const jsend: Jsend = res.data
+    if (jsend.status === 'fail') {
+      throw Error('got invalid ice, retrying..')
+    }
 
-          const parsedIce = JSON.parse(atob(c.ice))
-          peer.addIceCandidate(parsedIce)
+    let shouldStopPolling = false
+    const candidates: Array<IceCandidate> = jsend.data
+    candidates.forEach(c => {
+      if (c.ice === '') {
+        shouldStopPolling = true
+        return
+      }
 
-          lastSeq = c.seq
-        })
+      const parsedIce = JSON.parse(atob(c.ice))
+      peer.addIceCandidate(parsedIce)
 
-        if (shouldStopPolling) {
-          clearInterval(pollerHandle)
-        }
-      })
+      lastSeq = c.seq
+    })
+
+    if (!shouldStopPolling) {
+      throw Error('should fetch more remote ice candidates')
+    }
   }
-  pollerHandle = setInterval(remoteIceCandidatesPoller, 2000)
-  
+
+  const retryOpt = { retries: 15, minTimeout: 2000, factor: 1 }
+  retry(remoteIceCandidatesPoller, retryOpt)
+
   yield call(iceExchange)
   yield put(iceExchangeDone())
 }
@@ -130,6 +141,8 @@ function* handleTrackStream(peer: RTCPeerConnection) {
 
 const createDataChannel = (peer: RTCPeerConnection): RTCDataChannel => {
   const dc = peer.createDataChannel('message')
+  dc.onopen = () => { console.log('dc open') }
+  dc.onclose = () => { console.log('dc closed') }
 
   WebRTCSession.setDataChannel(dc)
 
@@ -145,11 +158,11 @@ function* setupSession(action: SetupSessionAction) {
 
     dc = createDataChannel(peer)
 
-    yield fork(handleSdpExchange, peer, action.payload.gameId)
-
-    yield fork(handleIceExchange, peer, action.payload.gameId)
-
     yield fork(handleTrackStream, peer)
+
+    yield call(handleSdpExchange, peer, action.payload.gameId)
+
+    yield call(handleIceExchange, peer, action.payload.gameId)
 
   } catch (e) {
     console.log(e)

@@ -2,6 +2,7 @@ import App, { AppInitialProps, AppContext } from 'next/app'
 import { wrapper } from '../redux/store'
 import '../styles/index.css'
 
+import _adapter from 'webrtc-adapter'
 import axios from 'axios'
 
 axios.defaults.baseURL = 'http://localhost:3000'
