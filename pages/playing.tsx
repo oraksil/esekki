@@ -75,8 +75,8 @@ const Playing = () => {
 
 export default Playing
 
-export const getStaticProps = wrapper.getStaticProps(async ({ store }) => {
-  return {
-    props: {},
-  }
-})
+// export const getStaticProps = wrapper.getStaticProps(async ({ store }) => {
+  // return {
+    // props: {},
+  // }
+// })
