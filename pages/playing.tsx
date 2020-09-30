@@ -25,7 +25,7 @@ const Playing = () => {
 
   const { id } = router.query
 
-  const gameId = parseInt(id)
+  const gameId = parseInt(id as string)
 
   if (!curGame && gameId === 999) {
     const tempPackId = 1

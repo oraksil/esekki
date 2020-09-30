@@ -3,10 +3,8 @@
   "version": "1.0.0",
   "scripts": {
     "dbg": "NODE_OPTIONS='--inspect' next",
-    "dev2": "next",
     "dev": "NODE_ENV=development PORT=3000 node server.js",
     "build": "next build",
-    "start2": "next start",
     "start": "NODE_ENV=production PORT=3000 node server.js",
     "typecheck": "tsc"
   },
