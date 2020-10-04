@@ -142,9 +142,21 @@ function* handleTrackStream(peer: RTCPeerConnection) {
 }
 
 const createDataChannel = (peer: RTCPeerConnection): RTCDataChannel => {
+  let pingHandler: any
+
   const dc = peer.createDataChannel('message')
-  dc.onopen = () => { console.log('dc open') }
-  dc.onclose = () => { console.log('dc closed') }
+  dc.onopen = () => { 
+    console.log('dc open')
+
+    dc.send('ping')
+    pingHandler = setInterval(() => { dc.send('ping') }, 5000)
+  }
+
+  dc.onclose = () => {
+    console.log('dc closed')
+
+    clearInterval(pingHandler)
+  }
 
   WebRTCSession.setDataChannel(dc)
 
