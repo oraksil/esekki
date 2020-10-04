@@ -1,10 +1,10 @@
 export type SdpInfo = {
-  peer_id: number
-  sdp: string
+  token: string
+  encoded: string
 }
 
 export type IceCandidate = {
+  token: string
+  encoded: string
   seq: number
-  peer_id: number
-  ice: string
 }
