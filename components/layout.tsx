@@ -11,7 +11,7 @@ const Layout = ({ preview, children }: Props) => {
   return (
     <React.Fragment>
       <Meta />
-      <div className="min-h-screen">
+      <div>
         <main>{children}</main>
       </div>
       <Footer />

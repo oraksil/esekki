@@ -10,9 +10,9 @@ const Hall = () => {
       <Head>
         <title>52 Games are running!</title>
       </Head>
-      <div className="container pt-32">
-        <div className="flex justify-center">
-          <div className="grid grid-cols-5 gap-8">
+      <div>
+        <div>
+          <div>
             {joinableGames.map((_, i) => ( 
               <div key={i}>
                 <JoinableGameCard />

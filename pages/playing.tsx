@@ -64,8 +64,8 @@ const Playing = () => {
       <Head>
         <title>Street Fighter II</title>
       </Head>
-      <div className="container pt-32">
-        <div className="flex justify-center">
+      <div>
+        <div>
           <GamePlayer stream={stream} />
         </div>
       </div>
