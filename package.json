@@ -40,7 +40,6 @@
     "@types/react-redux": "^7.1.9",
     "@types/redux-logger": "^3.0.8",
     "http-proxy-middleware": "^1.0.5",
-    "postcss-preset-env": "^6.7.0",
-    "tailwindcss": "^1.4.0"
+    "postcss-preset-env": "^6.7.0"
   }
 }
