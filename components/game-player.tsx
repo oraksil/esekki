@@ -1,5 +1,6 @@
-import Icon from './icon'
 import React, { useEffect, useRef } from 'react'
+
+import styles from './game-player.module.css'
 
 interface Props {
   stream?: MediaStream
@@ -18,23 +19,8 @@ const GamePlayer = (props: Props) => {
   }, [props.stream])
 
   return (
-    <div>
-      <div>
-        <video ref={videoRef}autoPlay={true} playsInline></video>
-      </div>
-      <div>
-        <div>
-          <Icon name="toll" />
-          <Icon name="gamepad" />
-        </div>
-        <div> 
-          <Icon name="link" />
-        </div>
-        <div>
-          <Icon name="pause" />
-          <Icon name="volume-off" />
-        </div>
-      </div>
+    <div className={styles['player-container']}>
+      <video ref={videoRef} autoPlay={true} playsInline></video>
     </div>
   )
 }
