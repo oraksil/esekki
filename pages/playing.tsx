@@ -1,72 +1,51 @@
-import Layout from '../components/layout'
+import React from 'react'
+import { useEffect, useState } from 'react'
 import Head from 'next/head'
+
+import Layout from '../components/layout'
 import GamePlayer from '../components/game-player'
 
-import React from 'react'
-import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { wrapper, RootState } from '../redux/store'
-import { startNewGame } from '../redux/common/actions'
-import { setupSession } from '../redux/webrtc/actions'
+import styles from './playing.module.css'
 
-import { WebRTCSession } from '../lib/webrtcsession'
+const PLAYER_PADDING_TOP_RATIO = 0.2375
+const PLAYER_HEIGHT_RATIO = 0.4761
+const PLAYER_ASPECT_RATIO = 1.3342
+
+type PlayerRect = {
+  marginTop: number
+  width: number
+  height: number
+}
+
+const calculatePlayerRect = (windowHeight: number): PlayerRect => {
+  const marginTop = windowHeight * PLAYER_PADDING_TOP_RATIO
+  const height = windowHeight * PLAYER_HEIGHT_RATIO 
+  const width = height * PLAYER_ASPECT_RATIO
+  return { marginTop, width, height }
+}
 
 const Playing = () => {
   const [stream, setStream] = useState<MediaStream>()
 
-  const curGame = useSelector((state: RootState) => state.common.game.current)
-
-  const mediaStreamOpen = useSelector((state: RootState) => state.webrtc.mediaStreamOpen)
-
-  const dispatch = useDispatch()
-
-  const router = useRouter()
-
-  const { id } = router.query
-
-  const gameId = parseInt(id as string)
-
-  if (!curGame && gameId === 999) {
-    const tempPackId = 1
-    dispatch(startNewGame(tempPackId))
-  }
+  const [playerRect, setPlayerRect] = useState<PlayerRect>()
 
   useEffect(() => {
-    if (gameId > 0 && gameId !== 999) {
-      console.log('dispatch setup session 1')
-      dispatch(setupSession(gameId))
-    }
+    setPlayerRect(calculatePlayerRect(window.innerHeight))
+    window.addEventListener('resize', () => {
+      setPlayerRect(calculatePlayerRect(window.innerHeight))
+    })
   }, [])
-
-  useEffect(() => {
-    if (curGame) {
-    console.log('dispatch setup session 2')
-      dispatch(setupSession(curGame.id))
-    }
-  }, [curGame]) 
-
-  useEffect(() => {
-    if (mediaStreamOpen) {
-      setStream(WebRTCSession.getMediaStream())
-
-      const handleKey = (ev: any) => {
-        WebRTCSession.sendKeyInput(ev.which || ev.key, ev.type === 'keydown')
-      }
-
-      document.addEventListener('keyup', handleKey)
-      document.addEventListener('keydown', handleKey)
-    }
-  }, [mediaStreamOpen])
 
   return (
     <Layout>
       <Head>
-        <title>Street Fighter II</title>
+        <title>Hello</title>
       </Head>
-      <div>
-        <div>
-          <GamePlayer stream={stream} />
+      <div className={styles['container']}>
+        <div className={styles['orakki-box']}>
+          <div className={styles['orakki-screen']} style={{ ...playerRect }}>
+            <GamePlayer stream={stream} />
+          </div>
         </div>
       </div>
     </Layout>
