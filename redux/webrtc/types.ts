@@ -13,6 +13,7 @@ export interface SetupSessionAction {
   type: typeof SETUP_SESSION
   payload: {
     gameId: number
+    joinToken: string
   }
 }
 

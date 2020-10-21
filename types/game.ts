@@ -7,3 +7,7 @@ export type Player = {
 export type Game = {
   id: number
 }
+
+export type Joinable = {
+  token: string
+}

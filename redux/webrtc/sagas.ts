@@ -12,8 +12,8 @@ import { Jsend } from '../../types/jsend'
 const createPeerConnection = (): RTCPeerConnection => {
 	const peer = new RTCPeerConnection({
     iceServers: [
-      { urls: 'stun:stun.l.google.com:19302' }
-      // { urls: 'turn:211.107.108.230:3478?transport=tcp', username: 'gamz', credential: 'gamz' }
+      { urls: 'stun:stun.l.google.com:19302' },
+      { urls: 'turn:211.107.108.230:3478?transport=tcp', username: 'gamz', credential: 'gamz' }
 		]
 	})
   
@@ -22,9 +22,7 @@ const createPeerConnection = (): RTCPeerConnection => {
   return peer
 }
 
-var token = '0'
-
-function* handleSdpExchange(peer: RTCPeerConnection, gameId: number) {
+function* handleSdpExchange(peer: RTCPeerConnection, gameId: number, token: string) {
   const exchangeSdp = async (offerDesc: RTCSessionDescriptionInit) => {
     const b64EncodedOffer = btoa(JSON.stringify(offerDesc))
     const payload = { token, 'sdp_offer': b64EncodedOffer }
@@ -67,7 +65,7 @@ function* handleSdpExchange(peer: RTCPeerConnection, gameId: number) {
   yield put(sdpExchangeDone())
 }
 
-function* handleIceExchange(peer: RTCPeerConnection, gameId: number) {
+function* handleIceExchange(peer: RTCPeerConnection, gameId: number, token: string) {
   const iceExchange = () => new Promise(resolve => {
     peer.onicecandidate = evt => {
       if (evt.candidate) {
@@ -148,7 +146,6 @@ const createDataChannel = (peer: RTCPeerConnection): RTCDataChannel => {
   dc.onopen = () => { 
     console.log('dc open')
 
-    dc.send('ping')
     pingHandler = setInterval(() => { dc.send('ping') }, 5000)
   }
 
@@ -167,8 +164,6 @@ function* setupSession(action: SetupSessionAction) {
   let peer!: RTCPeerConnection
   let dc!: RTCDataChannel
 
-  token = `${Math.floor(Math.random() * 1000000) + 100}`
-
   try {
     peer = createPeerConnection()
 
@@ -176,9 +171,9 @@ function* setupSession(action: SetupSessionAction) {
 
     yield fork(handleTrackStream, peer)
 
-    yield call(handleSdpExchange, peer, action.payload.gameId)
+    yield call(handleSdpExchange, peer, action.payload.gameId, action.payload.joinToken)
 
-    yield call(handleIceExchange, peer, action.payload.gameId)
+    yield call(handleIceExchange, peer, action.payload.gameId, action.payload.joinToken)
 
   } catch (e) {
     console.log(e)
