@@ -8,6 +8,9 @@ export interface CommonState {
   }
 }
 
+export const GET_PLAYER_OK = 'GET_PLAYER_OK'
+export const GET_PLAYER_FAILED = 'GET_PLAYER_FAILED'
+
 export const NEW_PLAYER_OK = 'NEW_PLAYER_OK'
 export const NEW_PLAYER_FAILED = 'NEW_PLAYER_FAILED'
 

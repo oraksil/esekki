@@ -2,6 +2,8 @@ import { AnyAction } from 'redux'
 import { HYDRATE } from 'next-redux-wrapper'
 import {
   CommonState,
+  GET_PLAYER_OK,
+  GET_PLAYER_FAILED,
   NEW_PLAYER_OK,
   NEW_PLAYER_FAILED,
   START_NEW_GAME_OK,
@@ -22,6 +24,10 @@ export const reducer = (state: CommonState = initialState, action: AnyAction): C
   switch (action.type) {
     case HYDRATE:
       return { ...state, ...action.payload.common }
+    case GET_PLAYER_OK:
+      return { ...state, player: action.payload }
+    case GET_PLAYER_FAILED:
+      return { ...state, player: null }
     case NEW_PLAYER_OK:
       return { ...state, player: action.payload }
     case NEW_PLAYER_FAILED:

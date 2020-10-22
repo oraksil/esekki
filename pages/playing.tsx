@@ -47,11 +47,34 @@ const setupKeyHandler = () => {
   document.addEventListener('keydown', handleKeyInput)
 }
 
+const extractGameId = (query: any): number | null => {
+  if (query.g) {
+    return parseInt(query.g as string)
+  }
+  return null
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Design Concept
 // 
-// For both new and joining game, 
-//   url should be the same like /playing?g=123 (g={gameId})
+// Assumption:
+// - For both new and joining game, 
+//   url looks like /playing?g=123 (g={gameId})
 //   it makes sense because there is an unique orakki.
+//
+// - New game has taken place already before landing here.
+//   (it might need registration form if player not found.)
+//   
+// - Player session can exists or not exists.
+//
+// Flow:
+//   1. If no player found, provide registration form and create a new player.
+//      Once creating a player, we can start joining game.
+//      
+//   2. Now player exists and we should check to be able to join the game.
+//
+//   3. If ok, let's go set up webrtc session and play.
+////////////////////////////////////////////////////////////////////////////////
 const Playing = () => {
   const dispatch = useDispatch()
   const router = useRouter()
@@ -59,26 +82,37 @@ const Playing = () => {
   const [stream, setStream] = useState<MediaStream>()
   const [playerRect, setPlayerRect] = useState<PlayerRect>()
 
+  const curPlayer = useSelector((state: RootState) => state.common.player)
   const game = useSelector((state: RootState) => state.common.game)
   const streamOpen = useSelector((state: RootState) => state.webrtc.mediaStreamOpen)
 
-  const { g } = router.query
-  const gameId = parseInt(g as string)
-
   useEffect(() => {
     setupResizeHandler(setPlayerRect)
-    // dispatch(canJoinGame(gameId))
+
+    // To discard
     dispatch(startNewGame(1))
   }, [])
 
   useEffect(() => {
-    // if (game.current && game.joinToken) {
-      // dispatch(setupSession(game.current.id, game.joinToken))
-    // }
+    if (!curPlayer) {
+      // ...
+      return
+    }
 
+    // To keep 
+    // const gameId = extractGameId(router.query)
+    // if (!game.joinToken && gameId) {
+      // dispatch(canJoinGame(gameId))
+    // }
+  }, [curPlayer])
+
+  useEffect(() => {
+    // To discard
     if (game.current && !game.joinToken) {
       dispatch(canJoinGame(game.current.id))
-    } else if (game.current && game.joinToken) {
+    }
+
+    if (game.current && game.joinToken) {
       dispatch(setupSession(game.current.id, game.joinToken))
     }
   }, [game])
