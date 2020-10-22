@@ -1,6 +1,8 @@
 import App, { AppInitialProps, AppContext } from 'next/app'
 import { wrapper } from '../redux/store'
 
+import { SessionInjector } from '../context/session'
+
 import 'bootstrap/dist/css/bootstrap.min.css'
 import '../styles/custom.css'
 
@@ -19,7 +21,11 @@ class WrappedApp extends App<AppInitialProps> {
 
   public render() {
     const { Component, pageProps } = this.props
-    return <Component { ...pageProps } />
+    return (
+      <SessionInjector>
+        <Component { ...pageProps } />
+      </SessionInjector>
+    )
   }
 }
 

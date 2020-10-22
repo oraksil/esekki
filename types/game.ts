@@ -9,5 +9,6 @@ export type Game = {
 }
 
 export type Joinable = {
+  game: Game
   token: string
 }
