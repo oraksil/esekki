@@ -2,7 +2,7 @@
   "name": "oraksil-front",
   "version": "1.0.0",
   "scripts": {
-    "dbg": "NODE_OPTIONS='--inspect' next",
+    "dbg": "NODE_OPTIONS='--inspect' next dev",
     "dev": "NODE_ENV=development PORT=3000 node server.js",
     "build": "next build",
     "start": "NODE_ENV=production PORT=3000 node server.js",
@@ -48,6 +48,7 @@
     "babel-loader": "^8.1.0",
     "babel-preset-react-app": "^9.1.2",
     "http-proxy-middleware": "^1.0.5",
-    "postcss-preset-env": "^6.7.0"
+    "postcss-preset-env": "^6.7.0",
+    "prettier": "2.1.2"
   }
 }
