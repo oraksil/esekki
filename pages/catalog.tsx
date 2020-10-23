@@ -1,46 +1,34 @@
-import { useEffect } from 'react'
 import Head from 'next/head'
-import Link from 'next/link'
 import Layout from '../components/layout'
 import PlayableGameCard from '../components/playable-game-card'
 
 import { RootState } from '../redux/store'
 import { useSelector, useDispatch } from 'react-redux'
-import { newPlayer } from '../redux/common/actions'
+import { getPacks } from '../redux/common/actions'
+
+import styles from './catalog.module.css'
 
 const Catalog = () => {
   const dispatch = useDispatch()
 
-  const player = useSelector((state: RootState) => state.common.player)
+  const packs = useSelector((state: RootState) => state.common.packs)
 
-  useEffect(() => {
-    if (player.current === undefined) {
-      dispatch(newPlayer('abcd'))
-    }
-  }, [])
-
-  const games = [1, 2, 3]
+  if (packs.length == 0) {
+    dispatch(getPacks(true))
+  }
 
   return (
     <Layout>
       <Head>
         <title>Go enjoy with games!</title>
       </Head>
-      <div>
-        {player.current?.name}
+      <div className={styles['container']}>
+        <div className={styles['ribbon']}>오락실 아이콘</div>
+        <div className={styles['available-games']}>Available Games</div>
         <div>
-          {games.map((_, i) => ( 
-            <div key={i}>
-              <PlayableGameCard />
-            </div>
+          {packs.map((obj: any, i: any) => (
+            <PlayableGameCard></PlayableGameCard>
           ))}
-        </div>
-        <div>
-          <Link href="/hall">
-            <a>
-              <span>Join existing games...</span>
-            </a>
-          </Link>
         </div>
       </div>
     </Layout>
@@ -48,9 +36,3 @@ const Catalog = () => {
 }
 
 export default Catalog
-
-// export const getStaticProps = wrapper.getStaticProps(async ({ store }) => {
-  // return {
-    // props: {},
-  // }
-// })

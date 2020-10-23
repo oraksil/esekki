@@ -2,7 +2,7 @@ import { Dispatch } from 'redux'
 import axios from 'axios'
 
 import { Jsend } from '../../types/jsend'
-import { Game, Player, Joinable } from '../../types/game'
+import { Pack, Game, Player, Joinable } from '../../types/game'
 
 import * as types from './types'
 
@@ -30,7 +30,9 @@ export const getPlayer = () => (dispatch: Dispatch) => {
         dispatch(getPlayerFailed())
       }
     })
-    .catch(_ => { dispatch(getPlayerFailed()) })
+    .catch(_ => {
+      dispatch(getPlayerFailed())
+    })
 }
 
 const newPlayerOk = (player: Player): types.NewPlayerOk => {
@@ -57,7 +59,9 @@ export const newPlayer = (name: string) => (dispatch: Dispatch) => {
         dispatch(newPlayerFailed())
       }
     })
-    .catch(_ => { dispatch(newPlayerFailed()) })
+    .catch(_ => {
+      dispatch(newPlayerFailed())
+    })
 }
 
 const canJoinGameOk = (joinable: Joinable): types.CanJoinGameOk => {
@@ -85,7 +89,9 @@ export const canJoinGame = (gameId: number) => (dispatch: Dispatch) => {
         dispatch(canJoinGameFailed())
       }
     })
-    .catch(_ => { dispatch(canJoinGameFailed()) })
+    .catch(_ => {
+      dispatch(canJoinGameFailed())
+    })
 }
 
 const startNewGameOk = (game: Game): types.StartNewGameOk => {
@@ -112,7 +118,32 @@ export const startNewGame = (packId: number) => (dispatch: Dispatch) => {
         dispatch(startNewGameFailed())
       }
     })
-    .catch(_ => { dispatch(startNewGameFailed()) })
+    .catch(_ => {
+      dispatch(startNewGameFailed())
+    })
 }
 
+const getPacksOk = (packs: Pack[]) => {
+  return {
+    type: types.GET_PACKS_OK,
+    payload: packs,
+  }
+}
 
+const getPacksFailed = () => {
+  return {
+    type: types.GET_PACKS_FAILED,
+    payload: undefined,
+  }
+}
+
+export const getPacks = (availableOnly: boolean) => (dispatch: Dispatch) => {
+  axios.get('/api/v1/packs/')
+    .then((res) => {
+      const jsend: Jsend = res.data
+      dispatch(getPacksOk(jsend.data))
+    })
+    .catch(_ => {
+      dispatch(getPacksFailed())
+    })
+}

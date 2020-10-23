@@ -9,7 +9,8 @@ const initialState: types.CommonState = {
   game: {
     current: undefined,
     joinToken: undefined
-  }
+  },
+  packs: []
 }
 
 export const reducer = (state: types.CommonState = initialState, action: AnyAction): types.CommonState => {
@@ -55,7 +56,27 @@ export const reducer = (state: types.CommonState = initialState, action: AnyActi
       return { ...state, game: { current: state.game.current, joinToken: null } }
     }
 
+    case types.GET_PACKS_OK: {
+      return { ...state, packs: action.payload }
+    }
+
+    case types.GET_PACKS_FAILED: {
+      return {
+        ...state,
+        packs: [
+          {
+            id: 0,
+            maker: 'test',
+            maxPlayer: 5,
+            title: 'test',
+            desc: 'test',
+          }
+        ]
+      }
+    }
+
     default:
       return state
   }
-}
+
+
