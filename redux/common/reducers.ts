@@ -13,7 +13,10 @@ import {
 } from './types'
 
 const initialState: CommonState = {
-  player: null,
+  player: {
+    current: null,
+    loaded: false
+  },
   game: {
     current: null,
     joinToken: null
@@ -25,13 +28,13 @@ export const reducer = (state: CommonState = initialState, action: AnyAction): C
     case HYDRATE:
       return { ...state, ...action.payload.common }
     case GET_PLAYER_OK:
-      return { ...state, player: action.payload }
+      return { ...state, player: { current: action.payload, loaded: true } }
     case GET_PLAYER_FAILED:
-      return { ...state, player: null }
+      return { ...state, player: { current: null, loaded: true } }
     case NEW_PLAYER_OK:
-      return { ...state, player: action.payload }
+      return { ...state, player: { current: action.payload, loaded: true } }
     case NEW_PLAYER_FAILED:
-      return { ...state, player: null }
+      return { ...state, player: { current: null, loaded: true } }
     case START_NEW_GAME_OK:
       return { ...state, game: { current: action.payload, joinToken: null } }
     case START_NEW_GAME_FAILED:

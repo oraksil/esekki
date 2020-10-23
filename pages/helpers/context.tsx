@@ -1,18 +1,18 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { RootState } from '../redux/store'
 
-import { getPlayer } from '../redux/common/actions'
+import { RootState } from '../../redux/store'
+import { getPlayer } from '../../redux/common/actions'
 
 const { Provider } = React.createContext({})
 
-export const SessionInjector = (props: any) => {
+export const PlayerResolver = (props: any) => {
   const dispatch = useDispatch()
 
-  const curPlayer = useSelector((state: RootState) => state.common.player)
+  const player = useSelector((state: RootState) => state.common.player)
 
   useEffect(() =>{
-    if (!curPlayer) {
+    if (!player.loaded && !player.current) {
       dispatch(getPlayer())
     }
   }, [])

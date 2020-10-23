@@ -1,5 +1,5 @@
 import React from 'react'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
@@ -11,6 +11,7 @@ import { setupSession } from '../redux/webrtc/actions'
 
 import Layout from '../components/layout'
 import GamePlayer from '../components/game-player'
+import PlayerRegisterModal from '../components/player-register-modal'
 
 import styles from './playing.module.css'
 
@@ -79,10 +80,11 @@ const Playing = () => {
   const dispatch = useDispatch()
   const router = useRouter()
 
+  const [modalShow, setModalShow] = useState(false)
   const [stream, setStream] = useState<MediaStream>()
   const [playerRect, setPlayerRect] = useState<PlayerRect>()
 
-  const curPlayer = useSelector((state: RootState) => state.common.player)
+  const player = useSelector((state: RootState) => state.common.player)
   const game = useSelector((state: RootState) => state.common.game)
   const streamOpen = useSelector((state: RootState) => state.webrtc.mediaStreamOpen)
 
@@ -90,12 +92,12 @@ const Playing = () => {
     setupResizeHandler(setPlayerRect)
 
     // To discard
-    dispatch(startNewGame(1))
+    // dispatch(startNewGame(1))
   }, [])
 
   useEffect(() => {
-    if (!curPlayer) {
-      // ...
+    if (player.loaded && !player.current) {
+      setModalShow(true)
       return
     }
 
@@ -104,7 +106,7 @@ const Playing = () => {
     // if (!game.joinToken && gameId) {
       // dispatch(canJoinGame(gameId))
     // }
-  }, [curPlayer])
+  }, [player])
 
   useEffect(() => {
     // To discard
@@ -136,6 +138,7 @@ const Playing = () => {
           </div>
         </div>
       </div>
+      <PlayerRegisterModal show={modalShow} onHide={() => setModalShow(false)} />
     </Layout>
   )
 }
