@@ -57,7 +57,8 @@ export const reducer = (state: types.CommonState = initialState, action: AnyActi
     }
 
     case types.GET_PACKS_OK: {
-      return { ...state, packs: action.payload }
+      const packs = (action as types.GetPacksOk).payload
+      return { ...state, packs }
     }
 
     case types.GET_PACKS_FAILED: {
@@ -78,5 +79,6 @@ export const reducer = (state: types.CommonState = initialState, action: AnyActi
     default:
       return state
   }
+}
 
 
