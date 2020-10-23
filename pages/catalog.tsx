@@ -12,7 +12,7 @@ const Catalog = () => {
 
   const player = useSelector((state: RootState) => state.common.player)
 
-  if (!player) {
+  if (!player.current) {
     dispatch(newPlayer('abcd'))
   }
 
@@ -24,7 +24,7 @@ const Catalog = () => {
         <title>Go enjoy with games!</title>
       </Head>
       <div>
-        {player?.name}
+        {player.current?.name}
         <div>
           {games.map((_, i) => ( 
             <div key={i}>
