@@ -26,19 +26,12 @@ const createPeerConnection = (): RTCPeerConnection => {
   return peer
 }
 
-function* handleSdpExchange(
-  peer: RTCPeerConnection,
-  gameId: number,
-  token: string
-) {
+function* handleSdpExchange(peer: RTCPeerConnection, gameId: number, token: string) {
   const exchangeSdp = async (offerDesc: RTCSessionDescriptionInit) => {
     const b64EncodedOffer = btoa(JSON.stringify(offerDesc))
     const payload = { token, sdp_offer: b64EncodedOffer }
 
-    const res = await axios.post(
-      `/api/v1/games/${gameId}/signaling/sdp`,
-      payload
-    )
+    const res = await axios.post(`/api/v1/games/${gameId}/signaling/sdp`, payload)
     const jsend: Jsend = res.data
     if (jsend.status === 'fail' || (jsend.data as SdpInfo).encoded === '') {
       throw Error('got invalid sdp, retrying..')
@@ -77,11 +70,7 @@ function* handleSdpExchange(
   yield put(sdpExchangeDone())
 }
 
-function* handleIceExchange(
-  peer: RTCPeerConnection,
-  gameId: number,
-  token: string
-) {
+function* handleIceExchange(peer: RTCPeerConnection, gameId: number, token: string) {
   const iceExchange = () =>
     new Promise(resolve => {
       peer.onicecandidate = evt => {
@@ -94,9 +83,7 @@ function* handleIceExchange(
       }
 
       peer.oniceconnectionstatechange = evt => {
-        if (
-          (evt.target as RTCPeerConnection).iceConnectionState === 'connected'
-        ) {
+        if ((evt.target as RTCPeerConnection).iceConnectionState === 'connected') {
           resolve()
         }
       }
@@ -199,19 +186,9 @@ function* setupSession(action: SetupSessionAction) {
 
     yield fork(handleTrackStream, peer)
 
-    yield call(
-      handleSdpExchange,
-      peer,
-      action.payload.gameId,
-      action.payload.joinToken
-    )
+    yield call(handleSdpExchange, peer, action.payload.gameId, action.payload.joinToken)
 
-    yield call(
-      handleIceExchange,
-      peer,
-      action.payload.gameId,
-      action.payload.joinToken
-    )
+    yield call(handleIceExchange, peer, action.payload.gameId, action.payload.joinToken)
   } catch (e) {
     console.log(e)
 

@@ -5,12 +5,12 @@ export interface Player {
 }
 
 export interface Pack {
-  id: number,
-  title: string,
-  maker: string,
-  desc: string,
+  id: number
+  title: string
+  maker: string
+  desc: string
   maxPlayer: number
-} 
+}
 
 export interface Game {
   id: number

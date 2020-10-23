@@ -86,9 +86,7 @@ const Playing = () => {
 
   const player = useSelector((state: RootState) => state.common.player)
   const game = useSelector((state: RootState) => state.common.game)
-  const streamOpen = useSelector(
-    (state: RootState) => state.webrtc.mediaStreamOpen
-  )
+  const streamOpen = useSelector((state: RootState) => state.webrtc.mediaStreamOpen)
 
   useEffect(() => {
     setupResizeHandler(setPlayerRect)
@@ -140,10 +138,7 @@ const Playing = () => {
           </div>
         </div>
       </div>
-      <PlayerRegisterModal
-        show={modalShow}
-        onHide={() => setModalShow(false)}
-      />
+      <PlayerRegisterModal show={modalShow} onHide={() => setModalShow(false)} />
     </Layout>
   )
 }
