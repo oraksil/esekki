@@ -27,7 +27,7 @@ const Catalog = () => {
         <div className={styles['available-games']}>Available Games</div>
         <div>
           {packs.map((_: any, i: any) => (
-            <PlayableGameCard key={i}></PlayableGameCard>
+            <PlayableGameCard pack={packs[i]} key={i}></PlayableGameCard>
           ))}
         </div>
       </div>
