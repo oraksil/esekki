@@ -26,10 +26,7 @@ const composeEnhancers = composeWithDevTools({
 })
 
 export const makeStore: MakeStore<RootState> = () => {
-  const store: any = createStore(
-    rootReducer,
-    composeEnhancers(applyMiddleware(thunk, sagaMiddleware))
-  )
+  const store: any = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk, sagaMiddleware)))
 
   store.mySaga = sagaMiddleware.run(mySaga)
   store.webrtcSaga = sagaMiddleware.run(webrtcSaga)

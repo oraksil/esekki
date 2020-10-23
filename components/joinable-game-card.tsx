@@ -5,12 +5,12 @@ const JoinableGameCard = () => {
     <div>
       <div>
         <div>
-          <Link href="/playing">
+          <Link href='/playing'>
             <a>Join Game!</a>
           </Link>
-        </div>      
+        </div>
 
-        <img src="https://i.ytimg.com/vi/IWyS18Yf9J0/hqdefault.jpg" />
+        <img src='https://i.ytimg.com/vi/IWyS18Yf9J0/hqdefault.jpg' />
 
         <div>
           <div>

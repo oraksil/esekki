@@ -1,7 +1,7 @@
 import dynamic from 'next/dynamic'
 
 type Props = {
-  name: string,
+  name: string
 }
 
 const Icon = (props: Props) => {
@@ -15,4 +15,4 @@ const Icon = (props: Props) => {
   )
 }
 
-export default Icon 
+export default Icon

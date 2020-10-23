@@ -13,10 +13,7 @@ const initialState: types.CommonState = {
   packs: [],
 }
 
-export const reducer = (
-  state: types.CommonState = initialState,
-  action: AnyAction
-): types.CommonState => {
+export const reducer = (state: types.CommonState = initialState, action: AnyAction): types.CommonState => {
   switch (action.type) {
     case HYDRATE: {
       return { ...state, ...action.payload.common }

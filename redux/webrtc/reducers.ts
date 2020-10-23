@@ -6,10 +6,7 @@ const initialState: types.WebRTCState = {
   mediaStreamOpen: false,
 }
 
-export const reducer = (
-  state: types.WebRTCState = initialState,
-  action: AnyAction
-): types.WebRTCState => {
+export const reducer = (state: types.WebRTCState = initialState, action: AnyAction): types.WebRTCState => {
   switch (action.type) {
     case HYDRATE: {
       return state
