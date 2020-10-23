@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import styles from './catalog.module.css'
+import styles from './cardboard.module.css'
 
 import { RootState } from '../redux/store'
 
