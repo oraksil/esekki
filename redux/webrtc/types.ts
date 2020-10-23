@@ -1,14 +1,11 @@
+// State
 export interface WebRTCState {
   mediaStreamOpen: boolean
 }
 
+// Action
 export const SETUP_SESSION = 'SETUP_SESSION'
-
-export const ICE_EXCHANGE_DONE = 'ICE_EXCHANGE_DONE'
-export const SDP_EXCHANGE_DONE = 'SDP_EXCHANGE_DONE'
-export const MEDIA_STREAM_OPEN = 'MEDIA_STREAM_OPEN'
-
-export interface SetupSessionAction {
+export interface SetupSession {
   type: typeof SETUP_SESSION
   payload: {
     gameId: number
@@ -16,23 +13,20 @@ export interface SetupSessionAction {
   }
 }
 
-export interface IceExchangeDoneAction {
+export const ICE_EXCHANGE_DONE = 'ICE_EXCHANGE_DONE'
+export interface IceExchangeDone {
   type: typeof ICE_EXCHANGE_DONE
-  payload: {}
+  payload: any
 }
 
-export interface SdpExchangeDoneAction {
+export const SDP_EXCHANGE_DONE = 'SDP_EXCHANGE_DONE'
+export interface SdpExchangeDone {
   type: typeof SDP_EXCHANGE_DONE
-  payload: {}
+  payload: any
 }
 
-export interface MediaStreamOpenAction {
+export const MEDIA_STREAM_OPEN = 'MEDIA_STREAM_OPEN'
+export interface MediaStreamOpen {
   type: typeof MEDIA_STREAM_OPEN
-  payload: {}
+  payload: any
 }
-
-export type WebRTCActionTypes =
-  | SetupSessionAction
-  | IceExchangeDoneAction
-  | SdpExchangeDoneAction
-  | MediaStreamOpenAction

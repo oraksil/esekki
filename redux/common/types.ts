@@ -13,64 +13,62 @@ export interface CommonState {
 }
 
 // Actions
-type ActionType = string
-
-export const GET_PLAYER_OK: ActionType = 'GET_PLAYER_OK'
+export const GET_PLAYER_OK = 'GET_PLAYER_OK'
 export interface GetPlayerOk {
-  type: ActionType
+  type: typeof GET_PLAYER_OK
   payload: Player
 }
 
 export const GET_PLAYER_FAILED = 'GET_PLAYER_FAILED'
 export interface GetPlayerFailed {
-  type: ActionType
+  type: typeof GET_PLAYER_FAILED
   payload: undefined
 }
 
 export const NEW_PLAYER_OK = 'NEW_PLAYER_OK'
 export interface NewPlayerOk {
-  type: ActionType
+  type: typeof NEW_PLAYER_OK
   payload: Player
 }
 
 export const NEW_PLAYER_FAILED = 'NEW_PLAYER_FAILED'
 export interface NewPlayerFailed {
-  type: ActionType
+  type: typeof NEW_PLAYER_FAILED
   payload: undefined
 }
 
 export const START_NEW_GAME_OK = 'START_NEW_GAME_OK'
 export interface StartNewGameOk {
-  type: ActionType
+  type: typeof START_NEW_GAME_OK 
   payload: Game
 }
 
 export const START_NEW_GAME_FAILED = 'START_NEW_GAME_FAILED'
 export interface StartNewGameFailed {
-  type: ActionType
+  type: typeof START_NEW_GAME_FAILED
   payload: undefined
 }
 
 export const CAN_JOIN_GAME_OK = 'CAN_JOIN_GAME_OK'
 export interface CanJoinGameOk {
-  type: ActionType
+  type: typeof CAN_JOIN_GAME_OK
   payload: Joinable
 }
 
 export const CAN_JOIN_GAME_FAILED = 'CAN_JOIN_GAME_FAILED'
 export interface CanJoinGameFailed {
-  type: ActionType
+  type: typeof CAN_JOIN_GAME_FAILED
   payload: undefined
 }
 
 export const GET_PACKS_OK = 'GET_PACKS_OK'
 export interface GetPacksOk {
-  type: ActionType
+  type: typeof GET_PACKS_OK
   payload: Array<Pack>
 }
 
 export const GET_PACKS_FAILED = 'GET_PACKS_FAILED'
 export interface GetPacksFailed {
-  type: ActionType
+  type: typeof GET_PACKS_FAILED
   payload: Array<Pack>
 }
