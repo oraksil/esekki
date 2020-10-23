@@ -15,7 +15,11 @@ axios.defaults.headers.post['Content-Type'] = 'application/json'
 class WrappedApp extends App<AppInitialProps> {
   public static getInitialProps = async ({ Component, ctx }: AppContext) => {
     return {
-      pageProps: { ...(Component.getInitialProps ? await Component.getInitialProps(ctx) : {}) }
+      pageProps: {
+        ...(Component.getInitialProps
+          ? await Component.getInitialProps(ctx)
+          : {}),
+      },
     }
   }
 
@@ -23,7 +27,7 @@ class WrappedApp extends App<AppInitialProps> {
     const { Component, pageProps } = this.props
     return (
       <PlayerResolver>
-        <Component { ...pageProps } />
+        <Component {...pageProps} />
       </PlayerResolver>
     )
   }

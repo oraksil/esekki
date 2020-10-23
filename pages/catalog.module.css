@@ -1,14 +1,15 @@
 .container {
-    background-color: #FFFFF9;
-    height: 100vh;
-    min-height: 100vh;
+  background-color: #fffff9;
+  height: 100vh;
+  min-height: 100vh;
 }
 
 .ribbon {
-    background: linear-gradient(180deg, #595959 80%, #282724 20%);
-    min-height: 4vh;
-    color: #F9F8F8;
-    font-size: 0.5em;
+  background: linear-gradient(180deg, #595959 80%, #282724 20%);
+  min-height: 4vh;
+  color: #f9f8f8;
+  font-size: 0.5em;
 }
 
-.available-games {}
+.available-games {
+}
