@@ -4,6 +4,14 @@ export interface Player {
   hash: string
 }
 
+export interface Pack {
+  id: number,
+  title: string,
+  maker: string,
+  desc: string,
+  maxPlayer: number
+} 
+
 export interface Game {
   id: number
 }
