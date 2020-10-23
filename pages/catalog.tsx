@@ -26,8 +26,8 @@ const Catalog = () => {
         <div className={styles['ribbon']}>오락실 아이콘</div>
         <div className={styles['available-games']}>Available Games</div>
         <div>
-          {packs.map((obj: any, i: any) => (
-            <PlayableGameCard></PlayableGameCard>
+          {packs.map((_: any, i: any) => (
+            <PlayableGameCard key={i}></PlayableGameCard>
           ))}
         </div>
       </div>

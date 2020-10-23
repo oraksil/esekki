@@ -9,7 +9,7 @@ export interface CommonState {
     current: Game | undefined | null
     joinToken: string | undefined | null
   },
-  packs: Pack[]
+  packs: Array<Pack>
 }
 
 // Actions
@@ -64,4 +64,13 @@ export interface CanJoinGameFailed {
 }
 
 export const GET_PACKS_OK = 'GET_PACKS_OK'
+export interface GetPacksOk {
+  type: ActionType
+  payload: Array<Pack>
+}
+
 export const GET_PACKS_FAILED = 'GET_PACKS_FAILED'
+export interface GetPacksFailed {
+  type: ActionType
+  payload: Array<Pack>
+}

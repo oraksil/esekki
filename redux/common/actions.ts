@@ -123,17 +123,17 @@ export const startNewGame = (packId: number) => (dispatch: Dispatch) => {
     })
 }
 
-const getPacksOk = (packs: Pack[]) => {
+const getPacksOk = (packs: Array<Pack>): types.GetPacksOk => {
   return {
     type: types.GET_PACKS_OK,
     payload: packs,
   }
 }
 
-const getPacksFailed = () => {
+const getPacksFailed = (): types.GetPacksFailed => {
   return {
     type: types.GET_PACKS_FAILED,
-    payload: undefined,
+    payload: [],
   }
 }
 
