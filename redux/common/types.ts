@@ -1,4 +1,4 @@
-import { Game, Player, Joinable } from '../../types/game'
+import { Pack, Game, Player, Joinable } from '../../types/game'
 
 // State
 export interface CommonState {
@@ -8,7 +8,8 @@ export interface CommonState {
   game: {
     current: Game | undefined | null
     joinToken: string | undefined | null
-  }
+  },
+  packs: Pack[]
 }
 
 // Actions
@@ -62,3 +63,5 @@ export interface CanJoinGameFailed {
   payload: undefined
 }
 
+export const GET_PACKS_OK = 'GET_PACKS_OK'
+export const GET_PACKS_FAILED = 'GET_PACKS_FAILED'
