@@ -1,12 +1,14 @@
 import Link from 'next/link'
 import styles from './cardboard.module.css'
+import React from 'react'
 
-import { RootState } from '../redux/store'
+import { Pack } from '../types/game'
 
-import { useSelector, useDispatch } from 'react-redux'
+interface Props {
+  pack: Pack
+}
 
-const PlayableGameCard = () => {
-  const packs = useSelector((state: RootState) => state.common.packs)
+const PlayableGameCard = (props: Props) => {
   return (
     <div className={styles['cardboard']}>
       <img className={styles['poster-img']} src='https://i.ytimg.com/vi/IWyS18Yf9J0/hqdefault.jpg' />
@@ -14,10 +16,10 @@ const PlayableGameCard = () => {
       <div>
         <div className={styles['pack-profile']}>
           <div>
-            <span className={styles['game-title']}>{packs[0].title}</span>
+            <span className={styles['game-title']}>{props.pack.title}</span>
           </div>
           <div>
-            <span className={styles['game-manufacturer']}>Game Producer</span>
+            <span className={styles['game-maker']}>{props.pack.maker}</span>
           </div>
           <Link href='/playing'>
             <button className={styles['btn-play']}>
