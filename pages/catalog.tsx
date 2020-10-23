@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
 import Layout from '../components/layout'
@@ -12,9 +13,11 @@ const Catalog = () => {
 
   const player = useSelector((state: RootState) => state.common.player)
 
-  if (!player.current) {
-    dispatch(newPlayer('abcd'))
-  }
+  useEffect(() => {
+    if (player.current === undefined) {
+      dispatch(newPlayer('abcd'))
+    }
+  }, [])
 
   const games = [1, 2, 3]
 

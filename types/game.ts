@@ -1,14 +1,14 @@
-export type Player = {
+export interface Player {
   id: number
   name: string
   hash: string
 }
 
-export type Game = {
+export interface Game {
   id: number
 }
 
-export type Joinable = {
-  game: Game
+export interface Joinable {
+  gameId: number
   token: string
 }
