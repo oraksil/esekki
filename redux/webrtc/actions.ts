@@ -3,34 +3,36 @@ import {
   ICE_EXCHANGE_DONE,
   SDP_EXCHANGE_DONE,
   MEDIA_STREAM_OPEN,
-  WebRTCActionTypes
+  WebRTCActionTypes,
 } from './types'
 
-export const setupSession = (gameId: number, joinToken: string): WebRTCActionTypes => {
+export const setupSession = (
+  gameId: number,
+  joinToken: string
+): WebRTCActionTypes => {
   return {
     type: SETUP_SESSION,
-    payload: { gameId, joinToken }
+    payload: { gameId, joinToken },
   }
 }
 
 export const iceExchangeDone = (): WebRTCActionTypes => {
   return {
     type: ICE_EXCHANGE_DONE,
-    payload: {}
+    payload: {},
   }
 }
 
 export const sdpExchangeDone = (): WebRTCActionTypes => {
   return {
     type: SDP_EXCHANGE_DONE,
-    payload: {}
+    payload: {},
   }
 }
 
 export const mediaStreamOpen = (): WebRTCActionTypes => {
   return {
     type: MEDIA_STREAM_OPEN,
-    payload: {}
+    payload: {},
   }
 }
-

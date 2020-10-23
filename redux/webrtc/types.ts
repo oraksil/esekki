@@ -1,4 +1,3 @@
-
 export interface WebRTCState {
   mediaStreamOpen: boolean
 }
@@ -33,7 +32,7 @@ export interface MediaStreamOpenAction {
 }
 
 export type WebRTCActionTypes =
-  SetupSessionAction |
-  IceExchangeDoneAction |
-  SdpExchangeDoneAction |
-  MediaStreamOpenAction
+  | SetupSessionAction
+  | IceExchangeDoneAction
+  | SdpExchangeDoneAction
+  | MediaStreamOpenAction

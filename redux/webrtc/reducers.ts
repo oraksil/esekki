@@ -4,14 +4,17 @@ import {
   WebRTCState,
   ICE_EXCHANGE_DONE,
   SDP_EXCHANGE_DONE,
-  MEDIA_STREAM_OPEN
+  MEDIA_STREAM_OPEN,
 } from './types'
 
 const initialState: WebRTCState = {
-  mediaStreamOpen: false
+  mediaStreamOpen: false,
 }
 
-export const reducer = (state: WebRTCState = initialState, action: AnyAction): WebRTCState => {
+export const reducer = (
+  state: WebRTCState = initialState,
+  action: AnyAction
+): WebRTCState => {
   switch (action.type) {
     case HYDRATE:
       return state
