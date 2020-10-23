@@ -1,7 +1,7 @@
 import App, { AppInitialProps, AppContext } from 'next/app'
 import { wrapper } from '../redux/store'
 
-import { SessionInjector } from '../context/session'
+import { PlayerResolver } from '../pages/helpers/context'
 
 import 'bootstrap/dist/css/bootstrap.min.css'
 import '../styles/custom.css'
@@ -22,9 +22,9 @@ class WrappedApp extends App<AppInitialProps> {
   public render() {
     const { Component, pageProps } = this.props
     return (
-      <SessionInjector>
+      <PlayerResolver>
         <Component { ...pageProps } />
-      </SessionInjector>
+      </PlayerResolver>
     )
   }
 }

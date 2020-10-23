@@ -1,7 +1,10 @@
 import { Game, Player } from '../../types/game'
 
 export interface CommonState {
-  player: Player | null
+  player: {
+    current: Player | null
+    loaded: boolean
+  },
   game: {
     current: Game | null
     joinToken: string | null
