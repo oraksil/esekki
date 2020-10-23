@@ -4,28 +4,19 @@ import axios from 'axios'
 import { Jsend } from '../../types/jsend'
 import { Game, Player, Joinable } from '../../types/game'
 
-import {
-  GET_PLAYER_OK,
-  GET_PLAYER_FAILED,
-  NEW_PLAYER_OK,
-  NEW_PLAYER_FAILED,
-  START_NEW_GAME_OK,
-  START_NEW_GAME_FAILED,
-  CAN_JOIN_GAME_OK,
-  CAN_JOIN_GAME_FAILED
-} from './types'
+import * as types from './types'
 
-const getPlayerOk = (player: Player) => {
+const getPlayerOk = (player: Player): types.GetPlayerOk => {
   return {
-    type: GET_PLAYER_OK,
-    payload: player
+    type: types.GET_PLAYER_OK,
+    payload: player 
   }
 }
 
-const getPlayerFailed = (player: Player) => {
+const getPlayerFailed = (): types.GetPlayerFailed => {
   return {
-    type: GET_PLAYER_FAILED,
-    payload: player
+    type: types.GET_PLAYER_FAILED,
+    payload: undefined
   }
 }
 
@@ -36,23 +27,23 @@ export const getPlayer = () => (dispatch: Dispatch) => {
       if (jsend.status === 'success') {
         dispatch(getPlayerOk(jsend.data))
       } else {
-        dispatch(getPlayerFailed(jsend.data))
+        dispatch(getPlayerFailed())
       }
     })
-    .catch(reject => { dispatch(getPlayerFailed(reject)) })
+    .catch(_ => { dispatch(getPlayerFailed()) })
 }
 
-const newPlayerOk = (player: Player) => {
+const newPlayerOk = (player: Player): types.NewPlayerOk => {
   return {
-    type: NEW_PLAYER_OK,
+    type: types.NEW_PLAYER_OK,
     payload: player
   }
 }
 
-const newPlayerFailed = (reject: any) => {
+const newPlayerFailed = (): types.NewPlayerFailed => {
   return {
-    type: NEW_PLAYER_FAILED,
-    payload: reject
+    type: types.NEW_PLAYER_FAILED,
+    payload: undefined
   }
 }
 
@@ -63,23 +54,23 @@ export const newPlayer = (name: string) => (dispatch: Dispatch) => {
       if (jsend.status === 'success') {
         dispatch(newPlayerOk(jsend.data))
       } else {
-        dispatch(newPlayerFailed(jsend.data))
+        dispatch(newPlayerFailed())
       }
     })
-    .catch(reject => { dispatch(newPlayerFailed(reject)) })
+    .catch(_ => { dispatch(newPlayerFailed()) })
 }
 
-const canJoinGameOk = (joinable: Joinable) => {
+const canJoinGameOk = (joinable: Joinable): types.CanJoinGameOk => {
   return {
-    type: CAN_JOIN_GAME_OK,
+    type: types.CAN_JOIN_GAME_OK,
     payload: joinable
   }
 }
 
-const canJoinGameFailed = (reject: any) => {
+const canJoinGameFailed = (): types.CanJoinGameFailed => {
   return {
-    type: CAN_JOIN_GAME_FAILED,
-    payload: reject
+    type: types.CAN_JOIN_GAME_FAILED,
+    payload: undefined
   }
 }
 
@@ -88,26 +79,26 @@ export const canJoinGame = (gameId: number) => (dispatch: Dispatch) => {
     .then(res => { 
       const jsend: Jsend = res.data
       if (jsend.status === 'success') {
-        const joinable: Joinable = { ...jsend.data, game: { id: gameId }}
+        const joinable: Joinable = { ...jsend.data, gameId }
         dispatch(canJoinGameOk(joinable))
       } else {
-        dispatch(canJoinGameFailed(jsend.data))
+        dispatch(canJoinGameFailed())
       }
     })
-    .catch(reject => { dispatch(canJoinGameFailed(reject)) })
+    .catch(_ => { dispatch(canJoinGameFailed()) })
 }
 
-const startNewGameOk = (game: Game) => {
+const startNewGameOk = (game: Game): types.StartNewGameOk => {
   return {
-    type: START_NEW_GAME_OK,
+    type: types.START_NEW_GAME_OK,
     payload: game
   }
 }
 
-const startNewGameFailed = (reject: any) => {
+const startNewGameFailed = (): types.StartNewGameFailed => {
   return {
-    type: START_NEW_GAME_FAILED,
-    payload: reject
+    type: types.START_NEW_GAME_FAILED,
+    payload: undefined
   }
 }
 
@@ -118,10 +109,10 @@ export const startNewGame = (packId: number) => (dispatch: Dispatch) => {
       if (jsend.status === 'success') {
         dispatch(startNewGameOk(jsend.data))
       } else {
-        dispatch(startNewGameFailed(jsend.data))
+        dispatch(startNewGameFailed())
       }
     })
-    .catch(reject => { dispatch(startNewGameFailed(reject)) })
+    .catch(_ => { dispatch(startNewGameFailed()) })
 }
 
 

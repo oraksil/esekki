@@ -92,11 +92,11 @@ const Playing = () => {
     setupResizeHandler(setPlayerRect)
 
     // To discard
-    // dispatch(startNewGame(1))
+    dispatch(startNewGame(1))
   }, [])
 
   useEffect(() => {
-    if (player.loaded && !player.current) {
+    if (player.current !== undefined && player.current === null) {
       setModalShow(true)
       return
     }
