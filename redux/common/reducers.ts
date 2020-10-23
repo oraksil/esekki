@@ -4,16 +4,19 @@ import * as types from './types'
 
 const initialState: types.CommonState = {
   player: {
-    current: undefined
+    current: undefined,
   },
   game: {
     current: undefined,
-    joinToken: undefined
+    joinToken: undefined,
   },
-  packs: []
+  packs: [],
 }
 
-export const reducer = (state: types.CommonState = initialState, action: AnyAction): types.CommonState => {
+export const reducer = (
+  state: types.CommonState = initialState,
+  action: AnyAction
+): types.CommonState => {
   switch (action.type) {
     case HYDRATE: {
       return { ...state, ...action.payload.common }
@@ -49,11 +52,14 @@ export const reducer = (state: types.CommonState = initialState, action: AnyActi
     case types.CAN_JOIN_GAME_OK: {
       const joinable = (action as types.CanJoinGameOk).payload
       const curGame = { ...state.game.current, id: joinable.gameId }
-      return { ...state, game: { current: curGame, joinToken: joinable.token } } 
+      return { ...state, game: { current: curGame, joinToken: joinable.token } }
     }
 
     case types.CAN_JOIN_GAME_FAILED: {
-      return { ...state, game: { current: state.game.current, joinToken: null } }
+      return {
+        ...state,
+        game: { current: state.game.current, joinToken: null },
+      }
     }
 
     case types.GET_PACKS_OK: {
@@ -71,8 +77,8 @@ export const reducer = (state: types.CommonState = initialState, action: AnyActi
             maxPlayer: 5,
             title: 'test',
             desc: 'test',
-          }
-        ]
+          },
+        ],
       }
     }
 
@@ -80,5 +86,3 @@ export const reducer = (state: types.CommonState = initialState, action: AnyActi
       return state
   }
 }
-
-

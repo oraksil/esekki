@@ -9,19 +9,20 @@ import * as types from './types'
 const getPlayerOk = (player: Player): types.GetPlayerOk => {
   return {
     type: types.GET_PLAYER_OK,
-    payload: player 
+    payload: player,
   }
 }
 
 const getPlayerFailed = (): types.GetPlayerFailed => {
   return {
     type: types.GET_PLAYER_FAILED,
-    payload: undefined
+    payload: undefined,
   }
 }
 
 export const getPlayer = () => (dispatch: Dispatch) => {
-  axios.get(`/api/v1/players/me`)
+  axios
+    .get(`/api/v1/players/me`)
     .then(res => {
       const jsend: Jsend = res.data
       if (jsend.status === 'success') {
@@ -38,20 +39,21 @@ export const getPlayer = () => (dispatch: Dispatch) => {
 const newPlayerOk = (player: Player): types.NewPlayerOk => {
   return {
     type: types.NEW_PLAYER_OK,
-    payload: player
+    payload: player,
   }
 }
 
 const newPlayerFailed = (): types.NewPlayerFailed => {
   return {
     type: types.NEW_PLAYER_FAILED,
-    payload: undefined
+    payload: undefined,
   }
 }
 
 export const newPlayer = (name: string) => (dispatch: Dispatch) => {
-  axios.post(`/api/v1/players/new`, { name })
-    .then(res => { 
+  axios
+    .post(`/api/v1/players/new`, { name })
+    .then(res => {
       const jsend: Jsend = res.data
       if (jsend.status === 'success') {
         dispatch(newPlayerOk(jsend.data))
@@ -67,20 +69,21 @@ export const newPlayer = (name: string) => (dispatch: Dispatch) => {
 const canJoinGameOk = (joinable: Joinable): types.CanJoinGameOk => {
   return {
     type: types.CAN_JOIN_GAME_OK,
-    payload: joinable
+    payload: joinable,
   }
 }
 
 const canJoinGameFailed = (): types.CanJoinGameFailed => {
   return {
     type: types.CAN_JOIN_GAME_FAILED,
-    payload: undefined
+    payload: undefined,
   }
 }
 
 export const canJoinGame = (gameId: number) => (dispatch: Dispatch) => {
-  axios.get(`/api/v1/games/${gameId}/joinable`)
-    .then(res => { 
+  axios
+    .get(`/api/v1/games/${gameId}/joinable`)
+    .then(res => {
       const jsend: Jsend = res.data
       if (jsend.status === 'success') {
         const joinable: Joinable = { ...jsend.data, gameId }
@@ -97,20 +100,21 @@ export const canJoinGame = (gameId: number) => (dispatch: Dispatch) => {
 const startNewGameOk = (game: Game): types.StartNewGameOk => {
   return {
     type: types.START_NEW_GAME_OK,
-    payload: game
+    payload: game,
   }
 }
 
 const startNewGameFailed = (): types.StartNewGameFailed => {
   return {
     type: types.START_NEW_GAME_FAILED,
-    payload: undefined
+    payload: undefined,
   }
 }
 
 export const startNewGame = (packId: number) => (dispatch: Dispatch) => {
-  axios.post(`/api/v1/packs/${packId}/new`)
-    .then(res => { 
+  axios
+    .post(`/api/v1/packs/${packId}/new`)
+    .then(res => {
       const jsend: Jsend = res.data
       if (jsend.status === 'success') {
         dispatch(startNewGameOk(jsend.data))
@@ -138,8 +142,9 @@ const getPacksFailed = (): types.GetPacksFailed => {
 }
 
 export const getPacks = (availableOnly: boolean) => (dispatch: Dispatch) => {
-  axios.get('/api/v1/packs/')
-    .then((res) => {
+  axios
+    .get('/api/v1/packs/')
+    .then(res => {
       const jsend: Jsend = res.data
       dispatch(getPacksOk(jsend.data))
     })

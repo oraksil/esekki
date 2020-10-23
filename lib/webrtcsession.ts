@@ -3,11 +3,17 @@ export namespace WebRTCSession {
   var data!: RTCDataChannel
   var stream!: MediaStream
 
-  export const setPeerConnection = (pc: RTCPeerConnection) => { peer = pc }
+  export const setPeerConnection = (pc: RTCPeerConnection) => {
+    peer = pc
+  }
 
-  export const setDataChannel = (dc: RTCDataChannel) => { data = dc }
+  export const setDataChannel = (dc: RTCDataChannel) => {
+    data = dc
+  }
 
-  export const setMediaStream = (s: MediaStream) => { stream = s }
+  export const setMediaStream = (s: MediaStream) => {
+    stream = s
+  }
 
   export const getMediaStream = () => stream
 
@@ -17,5 +23,3 @@ export namespace WebRTCSession {
     }
   }
 }
-
-
