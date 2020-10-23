@@ -1,38 +1,29 @@
-import {
-  SETUP_SESSION,
-  ICE_EXCHANGE_DONE,
-  SDP_EXCHANGE_DONE,
-  MEDIA_STREAM_OPEN,
-  WebRTCActionTypes,
-} from './types'
+import * as types from './types'
 
-export const setupSession = (
-  gameId: number,
-  joinToken: string
-): WebRTCActionTypes => {
+export const setupSession = (gameId: number, joinToken: string): types.SetupSession => {
   return {
-    type: SETUP_SESSION,
+    type: types.SETUP_SESSION,
     payload: { gameId, joinToken },
   }
 }
 
-export const iceExchangeDone = (): WebRTCActionTypes => {
+export const iceExchangeDone = (): types.IceExchangeDone => {
   return {
-    type: ICE_EXCHANGE_DONE,
+    type: types.ICE_EXCHANGE_DONE,
     payload: {},
   }
 }
 
-export const sdpExchangeDone = (): WebRTCActionTypes => {
+export const sdpExchangeDone = (): types.SdpExchangeDone => {
   return {
-    type: SDP_EXCHANGE_DONE,
+    type: types.SDP_EXCHANGE_DONE,
     payload: {},
   }
 }
 
-export const mediaStreamOpen = (): WebRTCActionTypes => {
+export const mediaStreamOpen = (): types.MediaStreamOpen => {
   return {
-    type: MEDIA_STREAM_OPEN,
+    type: types.MEDIA_STREAM_OPEN,
     payload: {},
   }
 }
