@@ -4,7 +4,7 @@ import retry from 'async-retry'
 import { fork, call, put, takeLatest } from 'redux-saga/effects'
 import { WebRTCSession } from '../../lib/webrtcsession'
 
-import { SETUP_SESSION, SetupSessionAction } from './types'
+import { SETUP_SESSION } from './types'
 import { iceExchangeDone, sdpExchangeDone, mediaStreamOpen } from './actions'
 import { SdpInfo, IceCandidate } from '../../types/signaling'
 import { Jsend } from '../../types/jsend'
