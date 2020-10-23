@@ -39,7 +39,7 @@ export interface NewPlayerFailed {
 
 export const START_NEW_GAME_OK = 'START_NEW_GAME_OK'
 export interface StartNewGameOk {
-  type: typeof START_NEW_GAME_OK 
+  type: typeof START_NEW_GAME_OK
   payload: Game
 }
 
