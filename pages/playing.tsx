@@ -6,7 +6,7 @@ import Head from 'next/head'
 
 import { WebRTCSession } from '../lib/webrtcsession'
 import { RootState } from '../redux/store'
-import { startNewGame, canJoinGame } from '../redux/common/actions'
+import { newPlayer, canJoinGame } from '../redux/common/actions'
 import { setupSession } from '../redux/webrtc/actions'
 
 import Layout from '../components/layout'
@@ -88,32 +88,33 @@ const Playing = () => {
   const game = useSelector((state: RootState) => state.common.game)
   const streamOpen = useSelector((state: RootState) => state.webrtc.mediaStreamOpen)
 
+  const handleNewPlayer = (playerName: string) => {
+    dispatch(newPlayer(playerName))
+  }
+
   useEffect(() => {
     setupResizeHandler(setPlayerRect)
-
-    // To discard
-    dispatch(startNewGame(1))
   }, [])
 
   useEffect(() => {
-    if (player.current !== undefined && player.current === null) {
+    if (player.current === undefined) {
+      return
+    }
+
+    if (player.current === null) {
       setModalShow(true)
       return
     }
 
-    // To keep
-    // const gameId = extractGameId(router.query)
-    // if (!game.joinToken && gameId) {
-    // dispatch(canJoinGame(gameId))
-    // }
+    setModalShow(false)
+
+    const gameId = extractGameId(router.query)
+    if (gameId && !game.joinToken) {
+      dispatch(canJoinGame(gameId))
+    }
   }, [player])
 
   useEffect(() => {
-    // To discard
-    if (game.current && !game.joinToken) {
-      dispatch(canJoinGame(game.current.id))
-    }
-
     if (game.current && game.joinToken) {
       dispatch(setupSession(game.current.id, game.joinToken))
     }
@@ -138,7 +139,7 @@ const Playing = () => {
           </div>
         </div>
       </div>
-      <PlayerRegisterModal show={modalShow} onHide={() => setModalShow(false)} />
+      <PlayerRegisterModal show={modalShow} onSubmit={handleNewPlayer} />
     </Layout>
   )
 }
