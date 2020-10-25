@@ -1,28 +1,72 @@
+import { useEffect, useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { useRouter } from 'next/router'
+import { RootState } from '../redux/store'
+import { getPacks, newPlayer, startNewGame } from '../redux/common/actions'
+import { Pack } from '../types/game'
+
 import Head from 'next/head'
 import Layout from '../components/layout'
 import PlayableGameCard from '../components/playable-game-card'
-
-import { RootState } from '../redux/store'
-import { useSelector, useDispatch } from 'react-redux'
-import { getPacks } from '../redux/common/actions'
-
-import styles from './catalog.module.css'
+import PlayerRegisterModal from '../components/player-register-modal'
 
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
-import Col from 'react-bootstrap/Col'
 
 import Navbar from 'react-bootstrap/Navbar'
 import CardDeck from 'react-bootstrap/CardDeck'
 
 const Catalog = () => {
   const dispatch = useDispatch()
+  const router = useRouter()
+
+  const [modalShow, setModalShow] = useState(false)
+  const [selectedPack, setSelectedPack] = useState<Pack>()
 
   const packs = useSelector((state: RootState) => state.common.packs)
+  const player = useSelector((state: RootState) => state.common.player)
+  const game = useSelector((state: RootState) => state.common.game)
 
-  if (packs.length == 0) {
-    dispatch(getPacks(true))
+  const handleNewPlayer = (playerName: string) => {
+    dispatch(newPlayer(playerName))
   }
+
+  const handleGameStart = (pack: Pack) => {
+    setSelectedPack(pack)
+  }
+
+  useEffect(() => {
+    if (packs.length == 0) {
+      dispatch(getPacks(true))
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!selectedPack) {
+      return
+    }
+
+    if (player.current === undefined) {
+      return
+    }
+
+    if (player.current === null) {
+      setModalShow(true)
+      return
+    }
+
+    setModalShow(false)
+
+    if (selectedPack) {
+      dispatch(startNewGame(selectedPack.id))
+    }
+  }, [player, selectedPack])
+
+  useEffect(() => {
+    if (game?.current) {
+      router.push(`/playing?g=${game.current.id}`)
+    }
+  }, [game])
 
   return (
     <Layout>
@@ -38,21 +82,22 @@ const Catalog = () => {
             height='28'
             className='d-inline-block align-top mr-2'
           />{' '}
-          O r a k s i l
+          Oraksil
         </Navbar.Brand>
       </Navbar>
-      <Container fluid>
+      <Container fluid style={{ padding: '30px 60px' }}>
         <Row>
-          <h5 style={{ margin: '10px' }}>Available Games</h5>
+          <h5>Available Games</h5>
         </Row>
         <Row>
-          <CardDeck style={{ padding: '5px 20px' }}>
-            {packs.map((_: any, i: any) => (
-              <PlayableGameCard pack={packs[i]} key={i}></PlayableGameCard>
+          <CardDeck style={{ padding: '10px 5px' }}>
+            {packs.map((pack: Pack, i: any) => (
+              <PlayableGameCard key={i} pack={pack} onStart={handleGameStart} />
             ))}
           </CardDeck>
         </Row>
       </Container>
+      <PlayerRegisterModal show={modalShow} onSubmit={handleNewPlayer} />
     </Layout>
   )
 }
