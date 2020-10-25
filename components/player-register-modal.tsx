@@ -1,27 +1,45 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, KeyboardEvent } from 'react'
 
-import { Modal, Button } from 'react-bootstrap'
+import { Modal, Button, FormControl } from 'react-bootstrap'
 
 interface Props {
   show: boolean
-  onHide: any
+  onSubmit: (playerName: string) => void
 }
 
 const PlayerRegisterModal = (props: Props) => {
+  const inputRef = useRef<HTMLInputElement>(null)
+  useEffect(() => inputRef?.current?.focus())
+
+  const handleSubmit = () => {
+    const playerName = inputRef?.current?.value
+    if (playerName) {
+      props.onSubmit(playerName)
+    }
+  }
+
+  const handleKeyDown = (event: KeyboardEvent<HTMLElement>) => {
+    if (event.key === 'Enter') {
+      handleSubmit()
+    }
+  }
+
   return (
-    <Modal {...props} size='lg' aria-labelledby='contained-modal-title-vcenter' centered>
-      <Modal.Header closeButton>
-        <Modal.Title id='contained-modal-title-vcenter'>Modal heading</Modal.Title>
+    <Modal {...props} aria-labelledby='new-player-registration' centered>
+      <Modal.Header>
+        <Modal.Title id='new-player-registration'>Quick Player Registration</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <h4>Centered Modal</h4>
-        <p>
-          Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis in, egestas eget quam.
-          Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-        </p>
+        <FormControl
+          ref={inputRef}
+          placeholder='Nickname'
+          aria-label='player-name'
+          aria-describedby='player-name'
+          onKeyDown={handleKeyDown}
+        />
       </Modal.Body>
       <Modal.Footer>
-        <Button onClick={props.onHide}>Close</Button>
+        <Button onClick={() => handleSubmit()}>Go Play</Button>
       </Modal.Footer>
     </Modal>
   )
