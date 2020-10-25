@@ -14,7 +14,6 @@ import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 
 import Navbar from 'react-bootstrap/Navbar'
-import CardDeck from 'react-bootstrap/CardDeck'
 
 const Catalog = () => {
   const dispatch = useDispatch()
@@ -90,11 +89,9 @@ const Catalog = () => {
           <h5>Available Games</h5>
         </Row>
         <Row>
-          <CardDeck style={{ padding: '10px 5px' }}>
-            {packs.map((pack: Pack, i: any) => (
-              <PlayableGameCard key={i} pack={pack} onStart={handleGameStart} />
-            ))}
-          </CardDeck>
+          {packs.map((pack: Pack, i: any) => (
+            <PlayableGameCard key={i} pack={pack} onStart={handleGameStart} />
+          ))}
         </Row>
       </Container>
       <PlayerRegisterModal show={modalShow} onSubmit={handleNewPlayer} />
