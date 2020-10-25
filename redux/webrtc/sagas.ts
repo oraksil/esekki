@@ -4,7 +4,7 @@ import retry from 'async-retry'
 import { fork, call, put, takeLatest } from 'redux-saga/effects'
 import { WebRTCSession } from '../../lib/webrtcsession'
 
-import { SETUP_SESSION } from './types'
+import * as types from './types'
 import { iceExchangeDone, sdpExchangeDone, mediaStreamOpen } from './actions'
 import { SdpInfo, IceCandidate } from '../../types/signaling'
 import { Jsend } from '../../types/jsend'
@@ -175,7 +175,7 @@ const createDataChannel = (peer: RTCPeerConnection): RTCDataChannel => {
   return dc
 }
 
-function* setupSession(action: SetupSessionAction) {
+function* setupSession(action: types.SetupSession) {
   let peer!: RTCPeerConnection
   let dc!: RTCDataChannel
 
@@ -203,7 +203,7 @@ function* setupSession(action: SetupSessionAction) {
 }
 
 function* webrtcSaga() {
-  yield takeLatest(SETUP_SESSION, setupSession)
+  yield takeLatest(types.SETUP_SESSION, setupSession)
 }
 
 export default webrtcSaga

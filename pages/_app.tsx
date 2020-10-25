@@ -1,7 +1,7 @@
 import App, { AppInitialProps, AppContext } from 'next/app'
 import { wrapper } from '../redux/store'
 
-import { PlayerResolver } from '../pages/helpers/context'
+import { PlayerResolver } from '../lib/context'
 
 import 'bootstrap/dist/css/bootstrap.min.css'
 import '../styles/custom.css'
