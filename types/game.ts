@@ -6,6 +6,7 @@ export interface Player {
 
 export interface Pack {
   id: number
+  status: string
   title: string
   maker: string
   desc: string

@@ -33,6 +33,15 @@ export const reducer = (state: types.CommonState = initialState, action: AnyActi
       return { ...state, player: { current: player } }
     }
 
+    case types.GET_PACKS_OK: {
+      const packs = (action as types.GetPacksOk).payload
+      return { ...state, packs }
+    }
+
+    case types.GET_PACKS_FAILED: {
+      return { ...state, packs: [] }
+    }
+
     case types.NEW_PLAYER_FAILED: {
       return { ...state, player: { current: null } }
     }
@@ -59,24 +68,12 @@ export const reducer = (state: types.CommonState = initialState, action: AnyActi
       }
     }
 
-    case types.GET_PACKS_OK: {
-      const packs = (action as types.GetPacksOk).payload
-      return { ...state, packs }
+    case types.NEW_USER_FEEDBACK_OK: {
+      return state
     }
 
-    case types.GET_PACKS_FAILED: {
-      return {
-        ...state,
-        packs: [
-          {
-            id: 0,
-            maker: 'test',
-            maxPlayer: 5,
-            title: 'test',
-            desc: 'test',
-          },
-        ],
-      }
+    case types.NEW_USER_FEEDBACK_FAILED: {
+      return state
     }
 
     default:

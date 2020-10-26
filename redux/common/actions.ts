@@ -141,14 +141,49 @@ const getPacksFailed = (): types.GetPacksFailed => {
   }
 }
 
-export const getPacks = (availableOnly: boolean) => (dispatch: Dispatch) => {
+export const getPacks = (statusFilter?: string) => (dispatch: Dispatch) => {
+  let url = '/api/v1/packs'
+  if (statusFilter && ['ready', 'prepare'].includes(statusFilter)) {
+    url += `?status=${statusFilter}`
+  }
+
   axios
-    .get('/api/v1/packs/')
+    .get(url)
     .then(res => {
       const jsend: Jsend = res.data
       dispatch(getPacksOk(jsend.data))
     })
     .catch(_ => {
       dispatch(getPacksFailed())
+    })
+}
+
+const newUserFeedbackOk = (): types.NewUserFeedbackOk => {
+  return {
+    type: types.NEW_USER_FEEDBACK_OK,
+    payload: {},
+  }
+}
+
+const newUserFeedbackFailed = (): types.NewUserFeedbackFailed => {
+  return {
+    type: types.NEW_USER_FEEDBACK_FAILED,
+    payload: undefined,
+  }
+}
+
+export const newUserFeedback = (feedback: string) => (dispatch: Dispatch) => {
+  axios
+    .post(`/api/v1/feedbacks/new`, { feedback })
+    .then(res => {
+      const jsend: Jsend = res.data
+      if (jsend.status === 'success') {
+        dispatch(newUserFeedbackOk())
+      } else {
+        dispatch(newUserFeedbackFailed())
+      }
+    })
+    .catch(_ => {
+      dispatch(newUserFeedbackFailed())
     })
 }
