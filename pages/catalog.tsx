@@ -2,31 +2,34 @@ import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useRouter } from 'next/router'
 import { RootState } from '../redux/store'
-import { getPacks, newPlayer, startNewGame } from '../redux/common/actions'
+import { getPacks, newPlayer, startNewGame, newUserFeedback } from '../redux/common/actions'
 import { Pack } from '../types/game'
 
 import Head from 'next/head'
 import Layout from '../components/layout'
 import PlayableGameCard from '../components/playable-game-card'
 import PlayerRegisterModal from '../components/player-register-modal'
+import PreparingGameCard from '../components/preparing-game-card'
 
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 
 import Navbar from 'react-bootstrap/Navbar'
+import UserFeedbackModal from '../components/user-feedback-modal'
 
 const Catalog = () => {
   const dispatch = useDispatch()
   const router = useRouter()
 
-  const [modalShow, setModalShow] = useState(false)
+  const [newPlayerModalShow, setNewPlayerModalShow] = useState(false)
+  const [feedbackModalShow, setFeedbackModalShow] = useState(false)
   const [selectedPack, setSelectedPack] = useState<Pack>()
 
   const packs = useSelector((state: RootState) => state.common.packs)
   const player = useSelector((state: RootState) => state.common.player)
   const game = useSelector((state: RootState) => state.common.game)
 
-  const handleNewPlayer = (playerName: string) => {
+  const handleNewPlayerSubmit = (playerName: string) => {
     dispatch(newPlayer(playerName))
   }
 
@@ -34,9 +37,18 @@ const Catalog = () => {
     setSelectedPack(pack)
   }
 
+  const handleUserFeedback = () => {
+    setFeedbackModalShow(true)
+  }
+
+  const handleUserFeedbackSubmit = (feedback: string) => {
+    dispatch(newUserFeedback(feedback))
+    setFeedbackModalShow(false)
+  }
+
   useEffect(() => {
     if (packs.length == 0) {
-      dispatch(getPacks(true))
+      dispatch(getPacks())
     }
   }, [])
 
@@ -50,11 +62,11 @@ const Catalog = () => {
     }
 
     if (player.current === null) {
-      setModalShow(true)
+      setNewPlayerModalShow(true)
       return
     }
 
-    setModalShow(false)
+    setNewPlayerModalShow(false)
 
     if (selectedPack) {
       dispatch(startNewGame(selectedPack.id))
@@ -86,15 +98,39 @@ const Catalog = () => {
       </Navbar>
       <Container fluid style={{ padding: '30px 60px' }}>
         <Row>
-          <h5>Available Games</h5>
+          <h5 style={{ margin: '20px 0px' }}>Available Games</h5>
         </Row>
         <Row>
-          {packs.map((pack: Pack, i: any) => (
-            <PlayableGameCard key={i} pack={pack} onStart={handleGameStart} />
-          ))}
+          {packs
+            .filter(p => p.status === 'ready')
+            .map((pack: Pack, i: any) => (
+              <div key={i} style={{ paddingBottom: '10px', paddingRight: '30px', width: '16rem' }}>
+                <PlayableGameCard pack={pack} onStart={handleGameStart} />
+              </div>
+            ))}
+        </Row>
+        <Row>
+          <h5 style={{ marginTop: '60px', marginBottom: '20px' }}>Coming Soon...</h5>
+        </Row>
+        <Row>
+          {packs
+            .filter(p => p.status === 'prepare')
+            .map((pack: Pack, i: any) => (
+              <div key={i} style={{ paddingRight: '30px', width: '16rem' }}>
+                <PreparingGameCard key={i} pack={pack} />
+              </div>
+            ))}
+          <div style={{ paddingRight: '30px', width: '16rem' }}>
+            <PreparingGameCard key={99} flip={true} onSuggest={handleUserFeedback} />
+          </div>
         </Row>
       </Container>
-      <PlayerRegisterModal show={modalShow} onSubmit={handleNewPlayer} />
+      <PlayerRegisterModal show={newPlayerModalShow} onSubmit={handleNewPlayerSubmit} />
+      <UserFeedbackModal
+        show={feedbackModalShow}
+        onSubmit={handleUserFeedbackSubmit}
+        onHide={() => setFeedbackModalShow(false)}
+      />
     </Layout>
   )
 }

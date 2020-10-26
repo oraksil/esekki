@@ -14,7 +14,7 @@ interface Props {
 const PlayableGameCard = (props: Props) => {
   const { pack } = props
   return (
-    <Card style={{ margin: '15px', width: '13rem' }}>
+    <Card>
       <Card.Img variant='top' src='https://i.ytimg.com/vi/IWyS18Yf9J0/hqdefault.jpg' />
       <Card.Body>
         <Card.Title style={{ fontSize: '1.2em' }}>{pack.title}</Card.Title>

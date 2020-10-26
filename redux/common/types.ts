@@ -72,3 +72,15 @@ export interface GetPacksFailed {
   type: typeof GET_PACKS_FAILED
   payload: Array<Pack>
 }
+
+export const NEW_USER_FEEDBACK_OK = 'NEW_USER_FEEDBACK_OK'
+export interface NewUserFeedbackOk {
+  type: typeof NEW_USER_FEEDBACK_OK
+  payload: any
+}
+
+export const NEW_USER_FEEDBACK_FAILED = 'NEW_USER_FEEDBACK_FAILED'
+export interface NewUserFeedbackFailed {
+  type: typeof NEW_USER_FEEDBACK_FAILED
+  payload: undefined
+}
