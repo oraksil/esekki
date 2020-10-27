@@ -9,8 +9,10 @@ export interface Pack {
   status: string
   title: string
   maker: string
-  desc: string
-  maxPlayer: number
+  description: string
+  max_players: number
+  poster_url: string
+  rom_name: string
 }
 
 export interface Game {
