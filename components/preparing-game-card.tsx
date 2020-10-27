@@ -33,7 +33,7 @@ const PreparingGameCard = (props: Props) => {
       <Card.Img variant='top' src='https://i.ytimg.com/vi/IWyS18Yf9J0/hqdefault.jpg' />
       <Card.Body>
         <Card.Title style={{ fontSize: '1.2em' }}>{pack?.title}</Card.Title>
-        <Card.Text>{pack?.desc}</Card.Text>
+        <Card.Text>{pack?.description}</Card.Text>
         <Card.Text>{pack?.maker}</Card.Text>
         <Button variant='light' disabled>
           Preparing
