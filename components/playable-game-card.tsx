@@ -17,9 +17,9 @@ const PlayableGameCard = (props: Props) => {
     <Card>
       <Card.Img variant='top' style={{ height: '15rem' }} src={pack.poster_url} />
       <Card.Body>
-        <Card.Title style={{ fontSize: '1.2em' }}>{pack.title}</Card.Title>
-        <Card.Text>{pack.maker}</Card.Text>
-        <Card.Text>{pack.max_players} Players</Card.Text>
+        <Card.Title style={{ fontSize: '1.2em' }}>{pack?.title}</Card.Title>
+        <Card.Text>{pack?.maker}</Card.Text>
+        <Card.Text>{pack?.max_players} Players</Card.Text>
         <Button variant='primary' onClick={() => props.onStart(pack)}>
           Play Game
         </Button>
