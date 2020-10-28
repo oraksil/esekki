@@ -4,6 +4,8 @@ import { wrapper } from '../redux/store'
 import { PlayerResolver } from '../lib/context'
 
 import 'bootstrap/dist/css/bootstrap.min.css'
+import 'video.js/dist/video-js.min.css'
+
 import '../styles/custom.css'
 
 import _adapter from 'webrtc-adapter'
