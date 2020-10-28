@@ -10,9 +10,9 @@ interface Props {
   stream?: MediaStream
 }
 
-const initVideoJsPlayer = (videoRef: RefObject<HTMLVideoElement>, vjPlayerSetter: any) => {
-  const vjOpts: VideoJsPlayerOptions = {
-    autoplay: true,
+const initVideoJsPlayer = (videoRef: RefObject<HTMLVideoElement>, vjsPlayerSetterr: any) => {
+  const vjsOpts: VideoJsPlayerOptions = {
+    autoplay: 'play',
     controls: false,
   }
 
@@ -20,17 +20,18 @@ const initVideoJsPlayer = (videoRef: RefObject<HTMLVideoElement>, vjPlayerSetter
     console.log('player ready')
   }
 
-  vjPlayerSetter(videojs(videoRef.current, vjOpts, onPlayerReady))
+  const vjsPlayer = videojs(videoRef.current, vjsOpts, onPlayerReady)
+  vjsPlayerSetterr(vjsPlayer)
 }
 
-const bindMediaStream = (player: videojs.Player, stream: MediaStream) => {
-  const videoElem = player.tech({ IWillNotUseThisInPlugins: true }).el() as HTMLVideoElement
+const bindMediaStream = (vjsPlayer: videojs.Player, stream: MediaStream) => {
+  const videoElem = vjsPlayer.tech({ IWillNotUseThisInPlugins: true }).el() as HTMLVideoElement
   videoElem.srcObject = stream
-  player.volume(0.2)
+  vjsPlayer.volume(0.2)
 }
 
-const setupPlayerIMA = (vjPlayer: videojs.Player) => {
-  const player = vjPlayer as any
+const setupPlayerIMA = (vjsPlayer: videojs.Player, playerVeilSetter: any) => {
+  const player = vjsPlayer as any
   player?.ima({
     adTagUrl:
       'https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dlinear&correlator=',
@@ -40,8 +41,9 @@ const setupPlayerIMA = (vjPlayer: videojs.Player) => {
     const completeEvents = [google.ima.AdEvent.Type.ALL_ADS_COMPLETED]
     completeEvents.forEach(evtType => {
       player.ima.addEventListener(evtType, () => {
-        vjPlayer.load()
-        vjPlayer.play()
+        vjsPlayer.load()
+        vjsPlayer.play()
+        playerVeilSetter(false)
       })
     })
   })
@@ -50,26 +52,30 @@ const setupPlayerIMA = (vjPlayer: videojs.Player) => {
 const GamePlayer = (props: Props) => {
   const videoRef = useRef<HTMLVideoElement>(null)
 
-  const [vjPlayer, setVjPlayer] = useState<videojs.Player>()
+  const [vjsPlayer, setVjsPlayer] = useState<videojs.Player>()
+  const [playerVeil, setPlayerVeil] = useState(true)
 
   useEffect(() => {
-    initVideoJsPlayer(videoRef, setVjPlayer)
+    initVideoJsPlayer(videoRef, setVjsPlayer)
     return () => {
-      vjPlayer?.dispose()
+      vjsPlayer?.dispose()
     }
   }, [])
 
   useEffect(() => {
-    if (vjPlayer && props.stream) {
-      bindMediaStream(vjPlayer, props.stream)
+    if (vjsPlayer && props.stream) {
+      setupPlayerIMA(vjsPlayer, setPlayerVeil)
 
-      setupPlayerIMA(vjPlayer)
+      bindMediaStream(vjsPlayer, props.stream)
     }
-  }, [vjPlayer, props.stream])
+  }, [vjsPlayer, props.stream])
 
   return (
     <div className={styles['player-container']}>
-      <video ref={videoRef} autoPlay={true} playsInline></video>
+      <div className={styles['player-video-wrapper']}>
+        <video ref={videoRef} autoPlay={true} playsInline></video>
+      </div>
+      {playerVeil && <div className={styles['player-veil']} />}
     </div>
   )
 }
