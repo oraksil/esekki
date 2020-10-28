@@ -31,6 +31,8 @@
     "remark": "11.0.2",
     "typescript": "^3.9.2",
     "video.js": "^7.0.3",
+    "videojs-contrib-ads": "^6.7.0",
+    "videojs-ima": "^1.8.3",
     "webrtc-adapter": "^7.7.0"
   },
   "devDependencies": {
