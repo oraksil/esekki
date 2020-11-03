@@ -57,10 +57,10 @@ function* handleSdpExchange(peer: RTCPeerConnection, gameId: number, token: stri
           // send my description to remote
           // and get remote answer via response,
           // and then set remote description
-          const retryOpt = { retries: 3, minTimeout: 4000, factor: 1 }
+          const retryOpt = { retries: 5, minTimeout: 4000, factor: 1.5 }
           retry((_bail, attempt) => {
-            console.log(`retrying at attempt ${attempt}`)
-            exchangeSdp(d)
+            console.log(`retrying exchanging sdp at attempt ${attempt}`)
+            return exchangeSdp(d)
           }, retryOpt).then(resolve)
         })
       }
@@ -124,7 +124,10 @@ function* handleIceExchange(peer: RTCPeerConnection, gameId: number, token: stri
   }
 
   const retryOpt = { retries: 15, minTimeout: 2000, factor: 1 }
-  retry(remoteIceCandidatesPoller, retryOpt)
+  retry((_bail, attempt) => {
+    console.log(`retrying remote ice polling at attempt ${attempt}`)
+    return remoteIceCandidatesPoller()
+  }, retryOpt)
 
   yield call(iceExchange)
   yield put(iceExchangeDone())
