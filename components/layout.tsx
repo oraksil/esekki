@@ -7,13 +7,11 @@ type Props = {
   children: React.ReactNode
 }
 
-const Layout = ({ preview, children }: Props) => {
+const Layout = ({ children }: Props) => {
   return (
     <React.Fragment>
       <Meta />
-      <div>
-        <main>{children}</main>
-      </div>
+      <main>{children}</main>
       <Footer />
     </React.Fragment>
   )
