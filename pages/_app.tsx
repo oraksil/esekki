@@ -10,9 +10,11 @@ import '../styles/custom.css'
 import _adapter from 'webrtc-adapter'
 
 import axios from 'axios'
-axios.defaults.baseURL = `${process.env.NEXT_PUBLIC_API_BASEURL}`
-axios.defaults.headers.post['Content-Type'] = 'application/json'
 axios.defaults.withCredentials = true
+axios.defaults.headers.post['Content-Type'] = 'application/json'
+if (process.env.NEXT_PUBLIC_API_BASEURL) {
+  axios.defaults.baseURL = `${process.env.NEXT_PUBLIC_API_BASEURL}`
+}
 
 class WrappedApp extends App<AppInitialProps> {
   public static getInitialProps = async ({ Component, ctx }: AppContext) => {
