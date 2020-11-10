@@ -29,6 +29,8 @@ class CustomDocument extends Document {
             data-ad-client='ca-pub-8360012973910726'
             async
             src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'></script>
+
+          <script src='https://webrtc.github.io/adapter/adapter-latest.js'></script>
         </Head>
         <body>
           <Main />

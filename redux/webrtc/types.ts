@@ -30,3 +30,9 @@ export interface MediaStreamOpen {
   type: typeof MEDIA_STREAM_OPEN
   payload: any
 }
+
+export const DATA_CHANNEL_OPEN = 'DATA_CHANNEL_OPEN'
+export interface DataChannelOpen {
+  type: typeof DATA_CHANNEL_OPEN
+  payload: any
+}
