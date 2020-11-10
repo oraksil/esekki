@@ -24,6 +24,10 @@ export const reducer = (state: types.WebRTCState = initialState, action: AnyActi
       return { ...state, mediaStreamOpen: true }
     }
 
+    case types.DATA_CHANNEL_OPEN: {
+      return state
+    }
+
     default:
       return state
   }

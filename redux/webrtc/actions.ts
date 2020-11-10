@@ -27,3 +27,10 @@ export const mediaStreamOpen = (): types.MediaStreamOpen => {
     payload: {},
   }
 }
+
+export const dataChannelOpen = (): types.DataChannelOpen => {
+  return {
+    type: types.DATA_CHANNEL_OPEN,
+    payload: {},
+  }
+}

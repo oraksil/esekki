@@ -5,7 +5,7 @@ import { fork, call, put, takeLatest } from 'redux-saga/effects'
 import { WebRTCSession } from '../../lib/webrtcsession'
 
 import * as types from './types'
-import { iceExchangeDone, sdpExchangeDone, mediaStreamOpen } from './actions'
+import { iceExchangeDone, sdpExchangeDone, mediaStreamOpen, dataChannelOpen } from './actions'
 import { SdpInfo, IceCandidate } from '../../types/signaling'
 import { Jsend } from '../../types/jsend'
 
@@ -14,7 +14,7 @@ const createPeerConnection = (): RTCPeerConnection => {
     iceServers: [
       { urls: 'stun:stun.l.google.com:19302' },
       {
-        urls: 'turn:211.107.108.230:3478?transport=tcp',
+        urls: 'turn:35.216.52.55:3478?transport=tcp',
         username: 'gamz',
         credential: 'gamz',
       },
@@ -46,24 +46,22 @@ function* handleSdpExchange(peer: RTCPeerConnection, gameId: number, token: stri
 
   const sdpExchange = () =>
     new Promise(resolve => {
-      peer.onnegotiationneeded = () => {
-        const offerOpt = {
-          iceRestart: true,
-          offerToReceiveVideo: true,
-          offerToReceiveAudio: true,
-        }
-
-        peer.createOffer(offerOpt).then(d => {
-          // send my description to remote
-          // and get remote answer via response,
-          // and then set remote description
-          const retryOpt = { retries: 5, minTimeout: 4000, factor: 1.5 }
-          retry((_bail, attempt) => {
-            console.log(`retrying exchanging sdp at attempt ${attempt}`)
-            return exchangeSdp(d)
-          }, retryOpt).then(resolve)
-        })
+      const offerOpt = {
+        iceRestart: true,
+        offerToReceiveVideo: true,
+        offerToReceiveAudio: true,
       }
+
+      peer.createOffer(offerOpt).then(d => {
+        // send my description to remote
+        // and get remote answer via response,
+        // and then set remote description
+        const retryOpt = { retries: 5, minTimeout: 4000, factor: 1.5 }
+        retry((_bail, attempt) => {
+          console.log(`retrying exchanging sdp at attempt ${attempt}`)
+          return exchangeSdp(d)
+        }, retryOpt).then(resolve)
+      })
     })
 
   yield call(sdpExchange)
@@ -155,39 +153,43 @@ function* handleTrackStream(peer: RTCPeerConnection) {
   yield put(mediaStreamOpen())
 }
 
-const createDataChannel = (peer: RTCPeerConnection): RTCDataChannel => {
-  let pingHandler: any
+function* handleDataChannelOpen(peer: RTCPeerConnection) {
+  const handler = () =>
+    new Promise(resolve => {
+      let pingHandler: any
+      const dc = peer.createDataChannel('message')
+      dc.onopen = () => {
+        console.log('dc open')
 
-  const dc = peer.createDataChannel('message')
-  dc.onopen = () => {
-    console.log('dc open')
+        pingHandler = setInterval(() => {
+          dc.send('ping')
+        }, 5000)
 
-    pingHandler = setInterval(() => {
-      dc.send('ping')
-    }, 5000)
-  }
+        WebRTCSession.setDataChannel(dc)
 
-  dc.onclose = () => {
-    console.log('dc closed')
+        resolve()
+      }
 
-    clearInterval(pingHandler)
-  }
+      dc.onclose = () => {
+        console.log('dc closed')
 
-  WebRTCSession.setDataChannel(dc)
+        clearInterval(pingHandler)
+      }
+    })
 
-  return dc
+  yield call(handler)
+  yield put(dataChannelOpen())
 }
 
 function* setupSession(action: types.SetupSession) {
   let peer!: RTCPeerConnection
-  let dc!: RTCDataChannel
 
   try {
     peer = createPeerConnection()
 
-    dc = createDataChannel(peer)
-
     yield fork(handleTrackStream, peer)
+
+    yield fork(handleDataChannelOpen, peer)
 
     yield call(handleSdpExchange, peer, action.payload.gameId, action.payload.joinToken)
 
@@ -197,10 +199,6 @@ function* setupSession(action: types.SetupSession) {
 
     if (peer) {
       peer.close()
-    }
-
-    if (dc) {
-      dc.close()
     }
   }
 }
