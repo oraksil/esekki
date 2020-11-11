@@ -10,9 +10,9 @@ interface Props {
   stream?: MediaStream
 }
 
-const initVideoJsPlayer = (videoRef: RefObject<HTMLVideoElement>, vjsPlayerSetterr: any) => {
+const initVideoJsPlayer = (videoRef: RefObject<HTMLVideoElement>) => {
   const vjsOpts: VideoJsPlayerOptions = {
-    autoplay: 'play',
+    autoplay: 'any',
     controls: false,
   }
 
@@ -20,42 +20,52 @@ const initVideoJsPlayer = (videoRef: RefObject<HTMLVideoElement>, vjsPlayerSette
     console.log('player ready')
   }
 
-  const vjsPlayer = videojs(videoRef.current, vjsOpts, onPlayerReady)
-  vjsPlayerSetterr(vjsPlayer)
+  return videojs(videoRef.current, vjsOpts, onPlayerReady)
 }
 
-const bindMediaStream = (vjsPlayer: videojs.Player, stream: MediaStream) => {
+const bindMediaStream = (vjsPlayer: videojs.Player, stream?: MediaStream) => {
+  const blankMedia = ({ width = 640, height = 480 } = {}) => {
+    const canvas: any = Object.assign(document.createElement('canvas'), { width, height })
+    canvas.getContext('2d')?.fillRect(0, 0, width, height)
+    return canvas.captureStream()
+  }
+
   const videoElem = vjsPlayer.tech({ IWillNotUseThisInPlugins: true }).el() as HTMLVideoElement
-  videoElem.srcObject = stream
-  vjsPlayer.volume(0.2)
+  if (stream) {
+    videoElem.srcObject = stream
+  } else {
+    videoElem.srcObject = blankMedia()
+  }
+
+  vjsPlayer.volume(0.3)
+  vjsPlayer.load()
+  vjsPlayer.play()
 }
 
 const setupPlayerIMA = (vjsPlayer: videojs.Player, playerVeilSetter: any) => {
-  const unveilAndPlay = () => {
-    vjsPlayer.load()
-    vjsPlayer.play()
+  const unveil = () => {
     playerVeilSetter(false)
   }
 
   const player = vjsPlayer as any
-  player?.ima({
+  player.ima({
     adTagUrl:
       'https://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/single_ad_samples&ciu_szs=300x250&impl=s&gdfp_req=1&env=vp&output=vast&unviewed_position_start=1&cust_params=deployment%3Ddevsite%26sample_ct%3Dlinear&correlator=',
   })
 
-  player?.on('nopostroll', () => {
+  player.on('nopostroll', () => {
     console.log('nopostroll')
-    unveilAndPlay()
+    unveil()
   })
-  player?.on('adserror', () => {
+  player.on('adserror', () => {
     console.log('adserror')
-    unveilAndPlay()
+    unveil()
   })
-  player?.on('adsready', () => {
+  player.on('adsready', () => {
     console.log('adsready')
     const completeEvents = [google.ima.AdEvent.Type.ALL_ADS_COMPLETED]
     completeEvents.forEach(evtType => {
-      player.ima.addEventListener(evtType, () => unveilAndPlay())
+      player.ima.addEventListener(evtType, () => unveil())
     })
   })
 }
@@ -67,19 +77,28 @@ const GamePlayer = (props: Props) => {
   const [playerVeil, setPlayerVeil] = useState(true)
 
   useEffect(() => {
-    initVideoJsPlayer(videoRef, setVjsPlayer)
+    const newPlayer = initVideoJsPlayer(videoRef)
+
+    setupPlayerIMA(newPlayer, setPlayerVeil)
+
+    bindMediaStream(newPlayer)
+
+    setVjsPlayer(newPlayer)
+
     return () => {
       vjsPlayer?.dispose()
     }
   }, [])
 
   useEffect(() => {
-    if (vjsPlayer && props.stream) {
-      setupPlayerIMA(vjsPlayer, setPlayerVeil)
-
-      bindMediaStream(vjsPlayer, props.stream)
+    if (vjsPlayer) {
+      if (!props.stream) {
+        vjsPlayer.play()
+      } else if (!playerVeil) {
+        bindMediaStream(vjsPlayer, props.stream)
+      }
     }
-  }, [vjsPlayer, props.stream])
+  }, [vjsPlayer, props.stream, playerVeil])
 
   return (
     <div className={styles['player-container']}>

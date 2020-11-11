@@ -18,7 +18,7 @@ import styles from './playing.module.css'
 import { PlayerRect } from '../types/layout'
 
 const PLAYER_PADDING_TOP_RATIO = 0.2375
-const PLAYER_HEIGHT_RATIO = 0.4761
+const PLAYER_HEIGHT_RATIO = 0.4771
 const PLAYER_ASPECT_RATIO = 1.3352
 
 const setupResizeHandler = (playerRectSetter: any) => {

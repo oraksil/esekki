@@ -28,7 +28,9 @@ const createPeerConnection = (): RTCPeerConnection => {
 
 function* handleSdpExchange(peer: RTCPeerConnection, gameId: number, token: string) {
   const exchangeSdp = async (offerDesc: RTCSessionDescriptionInit) => {
-    const b64EncodedOffer = btoa(JSON.stringify(offerDesc))
+    await peer.setLocalDescription(offerDesc)
+
+    const b64EncodedOffer = btoa(JSON.stringify(peer.localDescription))
     const payload = { token, sdp_offer: b64EncodedOffer }
 
     const res = await axios.post(`/api/v1/games/${gameId}/signaling/sdp`, payload)
@@ -38,10 +40,8 @@ function* handleSdpExchange(peer: RTCPeerConnection, gameId: number, token: stri
     }
 
     const sdpInfo: SdpInfo = jsend.data
-    peer.setLocalDescription(offerDesc)
-
     const sdpAnswer = JSON.parse(atob(sdpInfo.encoded))
-    peer.setRemoteDescription(sdpAnswer)
+    await peer.setRemoteDescription(sdpAnswer)
   }
 
   const sdpExchange = () =>
