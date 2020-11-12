@@ -37,13 +37,13 @@ const bindMediaStream = (vjsPlayer: videojs.Player, stream?: MediaStream) => {
     videoElem.srcObject = blankMedia()
   }
 
-  vjsPlayer.volume(0.3)
   vjsPlayer.load()
   vjsPlayer.play()
 }
 
 const setupPlayerIMA = (vjsPlayer: videojs.Player, playerVeilSetter: any) => {
   const unveil = () => {
+    vjsPlayer.volume(0.3)
     playerVeilSetter(false)
   }
 
@@ -94,11 +94,11 @@ const GamePlayer = (props: Props) => {
     if (vjsPlayer) {
       if (!props.stream) {
         vjsPlayer.play()
-      } else if (!playerVeil) {
+      } else {
         bindMediaStream(vjsPlayer, props.stream)
       }
     }
-  }, [vjsPlayer, props.stream, playerVeil])
+  }, [vjsPlayer, props.stream])
 
   return (
     <div className={styles['player-container']}>
