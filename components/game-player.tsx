@@ -23,27 +23,29 @@ const initVideoJsPlayer = (videoRef: RefObject<HTMLVideoElement>) => {
   return videojs(videoRef.current, vjsOpts, onPlayerReady)
 }
 
-const bindMediaStream = (vjsPlayer: videojs.Player, stream?: MediaStream) => {
-  const blankMedia = ({ width = 640, height = 480 } = {}) => {
-    const canvas: any = Object.assign(document.createElement('canvas'), { width, height })
-    canvas.getContext('2d')?.fillRect(0, 0, width, height)
-    return canvas.captureStream()
-  }
+const blankMediaStream = ({ width = 640, height = 480 } = {}) => {
+  const canvas: any = Object.assign(document.createElement('canvas'), { width, height })
+  canvas.getContext('2d')?.fillRect(0, 0, width, height)
+  const video = Object.assign(canvas.captureStream().getVideoTracks()[0], { enabled: false })
 
+  const ctx = new AudioContext(),
+    oscillator = ctx.createOscillator()
+  const dst: any = oscillator.connect(ctx.createMediaStreamDestination())
+  oscillator.start()
+  const audio = Object.assign(dst.stream.getAudioTracks()[0], { enabled: false })
+
+  return new MediaStream([video, audio])
+}
+
+const bindMediaStream = (vjsPlayer: videojs.Player, stream: MediaStream) => {
   const videoElem = vjsPlayer.tech({ IWillNotUseThisInPlugins: true }).el() as HTMLVideoElement
-  if (stream) {
-    videoElem.srcObject = stream
-  } else {
-    videoElem.srcObject = blankMedia()
-  }
-
-  vjsPlayer.load()
-  vjsPlayer.play()
+  videoElem.srcObject = stream
 }
 
 const setupPlayerIMA = (vjsPlayer: videojs.Player, playerVeilSetter: any) => {
-  const unveil = () => {
-    vjsPlayer.volume(0.3)
+  const unveilAndPlay = () => {
+    vjsPlayer.load()
+    vjsPlayer.play()
     playerVeilSetter(false)
   }
 
@@ -55,17 +57,17 @@ const setupPlayerIMA = (vjsPlayer: videojs.Player, playerVeilSetter: any) => {
 
   player.on('nopostroll', () => {
     console.log('nopostroll')
-    unveil()
+    unveilAndPlay()
   })
   player.on('adserror', () => {
     console.log('adserror')
-    unveil()
+    unveilAndPlay()
   })
   player.on('adsready', () => {
     console.log('adsready')
     const completeEvents = [google.ima.AdEvent.Type.ALL_ADS_COMPLETED]
     completeEvents.forEach(evtType => {
-      player.ima.addEventListener(evtType, () => unveil())
+      player.ima.addEventListener(evtType, () => unveilAndPlay())
     })
   })
 }
@@ -81,7 +83,7 @@ const GamePlayer = (props: Props) => {
 
     setupPlayerIMA(newPlayer, setPlayerVeil)
 
-    bindMediaStream(newPlayer)
+    bindMediaStream(newPlayer, blankMediaStream())
 
     setVjsPlayer(newPlayer)
 
@@ -103,7 +105,7 @@ const GamePlayer = (props: Props) => {
   return (
     <div className={styles['player-container']}>
       <div className={styles['player-video-wrapper']}>
-        <video ref={videoRef} autoPlay={true} playsInline></video>
+        <video ref={videoRef} autoPlay={true} playsInline={true}></video>
       </div>
       {playerVeil && <div className={styles['player-veil']} />}
     </div>
