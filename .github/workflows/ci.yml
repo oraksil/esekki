@@ -16,8 +16,6 @@ jobs:
         node: ["12.18.2"]
 
     steps:
-    - uses: Actions-R-Us/default-env@v1
-
     - uses: actions/checkout@v2
 
     - name: Cache
