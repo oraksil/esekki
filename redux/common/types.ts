@@ -4,6 +4,8 @@ import { Pack, Game, Player, Joinable } from '../../types/game'
 export interface CommonState {
   player: {
     current: Player | undefined | null
+    turnUsername: string | null
+    turnPassword: string | null
   }
   game: {
     current: Game | undefined | null

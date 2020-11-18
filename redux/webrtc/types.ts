@@ -10,6 +10,8 @@ export interface SetupSession {
   payload: {
     gameId: number
     joinToken: string
+    turnUsername: string | null
+    turnPassword: string | null
   }
 }
 

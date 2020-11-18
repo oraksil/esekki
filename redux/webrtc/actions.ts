@@ -1,9 +1,14 @@
 import * as types from './types'
 
-export const setupSession = (gameId: number, joinToken: string): types.SetupSession => {
+export const setupSession = (
+  gameId: number,
+  joinToken: string,
+  turnUsername: string | null,
+  turnPassword: string | null
+): types.SetupSession => {
   return {
     type: types.SETUP_SESSION,
-    payload: { gameId, joinToken },
+    payload: { gameId, joinToken, turnUsername, turnPassword },
   }
 }
 
