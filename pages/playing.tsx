@@ -9,6 +9,7 @@ import { RootState } from '../redux/store'
 import { newPlayer, canJoinGame } from '../redux/common/actions'
 import { setupSession } from '../redux/webrtc/actions'
 
+import Icon from '../components/icon'
 import Layout from '../components/layout'
 import GamePlayer from '../components/game-player'
 import PlayerRegisterModal from '../components/player-register-modal'
@@ -132,6 +133,14 @@ const Playing = () => {
         <div className={styles['orakki-box']}>
           <div className={styles['orakki-screen']} style={{ ...playerRect }}>
             <GamePlayer stream={stream} />
+            <div className={styles['orakki-switch']}>
+              <div className={styles['switch-icon']}>
+                <Icon name='joystick' />
+              </div>
+              <div className={styles['switch-icon']}>
+                <Icon name='tickets' />
+              </div>
+            </div>
           </div>
         </div>
       </div>

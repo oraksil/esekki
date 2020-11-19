@@ -2,15 +2,19 @@ import dynamic from 'next/dynamic'
 
 type Props = {
   name: string
+  width?: number
+  height?: number
+  fill?: string
+  className?: string
 }
 
 const Icon = (props: Props) => {
   // this is a workaround to import module by variable
   // https://github.com/webpack/webpack/issues/6680#issuecomment-370800037
-  const IconFromSvg = dynamic(() => import('../public/assets/icons/' + props.name + '.svg'))
+  const IconFromSvg: any = dynamic(() => import('../public/assets/icons/' + props.name + '.svg'))
   return (
-    <div>
-      <IconFromSvg />
+    <div className={props.className}>
+      <IconFromSvg width={props.width} height={props.height} fill={props.fill} />
     </div>
   )
 }

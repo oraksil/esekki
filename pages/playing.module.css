@@ -20,3 +20,17 @@
   border-radius: 8px;
   background-color: black;
 }
+
+.orakki-switch {
+  float: right;
+  margin-top: 5.3vh;
+  margin-right: -2vh;
+}
+
+.switch-icon {
+  height: 4.5vh;
+  width: 4.5vh;
+  fill: #ababab;
+  display: inline-block;
+  margin-left: 2vh;
+}
