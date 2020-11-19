@@ -5,6 +5,8 @@ import * as types from './types'
 const initialState: types.CommonState = {
   player: {
     current: undefined,
+    turnUsername: null,
+    turnPassword: null,
   },
   game: {
     current: undefined,
@@ -21,16 +23,16 @@ export const reducer = (state: types.CommonState = initialState, action: AnyActi
 
     case types.GET_PLAYER_OK: {
       const player = (action as types.GetPlayerOk).payload
-      return { ...state, player: { current: player } }
+      return { ...state, player: { ...state.player, current: player } }
     }
 
     case types.GET_PLAYER_FAILED: {
-      return { ...state, player: { current: null } }
+      return { ...state, player: { ...state.player, current: null } }
     }
 
     case types.NEW_PLAYER_OK: {
       const player = (action as types.NewPlayerOk).payload
-      return { ...state, player: { current: player } }
+      return { ...state, player: { ...state.player, current: player } }
     }
 
     case types.GET_PACKS_OK: {
@@ -43,7 +45,7 @@ export const reducer = (state: types.CommonState = initialState, action: AnyActi
     }
 
     case types.NEW_PLAYER_FAILED: {
-      return { ...state, player: { current: null } }
+      return { ...state, player: { ...state.player, current: null } }
     }
 
     case types.START_NEW_GAME_OK: {
@@ -58,12 +60,17 @@ export const reducer = (state: types.CommonState = initialState, action: AnyActi
     case types.CAN_JOIN_GAME_OK: {
       const joinable = (action as types.CanJoinGameOk).payload
       const curGame = { ...state.game.current, id: joinable.gameId }
-      return { ...state, game: { current: curGame, joinToken: joinable.token } }
+      return {
+        ...state,
+        player: { ...state.player, turnUsername: joinable.username, turnPassword: joinable.password },
+        game: { current: curGame, joinToken: joinable.token },
+      }
     }
 
     case types.CAN_JOIN_GAME_FAILED: {
       return {
         ...state,
+        player: { ...state.player, turnUsername: null, turnPassword: null },
         game: { current: state.game.current, joinToken: null },
       }
     }

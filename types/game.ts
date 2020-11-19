@@ -22,4 +22,6 @@ export interface Game {
 export interface Joinable {
   gameId: number
   token: string
+  username: string
+  password: string
 }

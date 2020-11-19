@@ -112,9 +112,9 @@ const Playing = () => {
 
   useEffect(() => {
     if (game.current && game.joinToken) {
-      dispatch(setupSession(game.current.id, game.joinToken))
+      dispatch(setupSession(game.current.id, game.joinToken, player.turnUsername, player.turnPassword))
     }
-  }, [game])
+  }, [player, game])
 
   useEffect(() => {
     if (streamOpen) {
