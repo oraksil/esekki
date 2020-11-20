@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="34.002998mm"
+   height="34.002998mm"
+   viewBox="0 0 34.002998 34.002998"
+   version="1.1"
+   id="svg1229"
+   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)"
+   sodipodi:docname="gamepad-num1.svg">
+  <defs
+     id="defs1223">
+    <rect
+       x="11.091685"
+       y="11.22532"
+       width="41.293144"
+       height="37.952274"
+       id="rect1800" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.979899"
+     inkscape:cx="4.7008881"
+     inkscape:cy="75.116756"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     inkscape:document-rotation="0"
+     showgrid="false"
+     inkscape:window-width="1433"
+     inkscape:window-height="1030"
+     inkscape:window-x="192"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0" />
+  <metadata
+     id="metadata1226">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:none;stroke:#424242;stroke-width:2.99998;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect841-2-8"
+       width="31.00301"
+       height="31.003279"
+       x="-32.502998"
+       y="-32.503269"
+       rx="5.9999509"
+       ry="6.0000029"
+       transform="scale(-1)" />
+    <text
+       xml:space="preserve"
+       id="text1798"
+       style="font-style:normal;font-weight:normal;font-size:19.7556px;line-height:0;font-family:sans-serif;white-space:pre;shape-inside:url(#rect1800);fill:#424242;fill-opacity:1;stroke:#424242;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;"
+       transform="matrix(0.76510901,0,0,0.8825511,3.6806692,-6.0342462)"><tspan
+         x="11.091797"
+         y="33.199362"><tspan
+           style="font-size:19.7556px;line-height:1.65;fill:#424242;fill-opacity:1;stroke:#424242;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1">1</tspan></tspan></text>
+  </g>
+</svg>
