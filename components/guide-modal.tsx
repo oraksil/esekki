@@ -1,7 +1,8 @@
 import React from 'react'
 
 import { Modal } from 'react-bootstrap'
-import dynamic from 'next/dynamic'
+
+import Icon from './icon'
 
 interface Props {
   show: boolean
@@ -9,15 +10,17 @@ interface Props {
 }
 
 const GuideModal = (props: Props) => {
-  const IconArrows: any = dynamic(() => import('../public/assets/icons/' + 'gamepad-arrows.svg'))
-  const IconNum1: any = dynamic(() => import('../public/assets/icons/' + 'gamepad-num1.svg'))
-  const IconNum2: any = dynamic(() => import('../public/assets/icons/' + 'gamepad-num2.svg'))
-  const IconKeyA: any = dynamic(() => import('../public/assets/icons/' + 'gamepad-numA.svg'))
-  const IconKeyS: any = dynamic(() => import('../public/assets/icons/' + 'gamepad-numS.svg'))
-  const IconKeyD: any = dynamic(() => import('../public/assets/icons/' + 'gamepad-numD.svg'))
-  const IconKeyZ: any = dynamic(() => import('../public/assets/icons/' + 'gamepad-numZ.svg'))
-  const IconKeyX: any = dynamic(() => import('../public/assets/icons/' + 'gamepad-numX.svg'))
-  const IconKeyC: any = dynamic(() => import('../public/assets/icons/' + 'gamepad-numC.svg'))
+  const IconArrows = () => <Icon name='gamepad-arrows' width={84} height={84} />
+  const IconKey = ({ name }: any) => <Icon name={name} width={26} height={26} />
+  const IconKeyCoin = () => <IconKey name='gamepad-num1' />
+  const IconKeyStart = () => <IconKey name='gamepad-num2' />
+  const IconKeyA = () => <IconKey name='gamepad-numA' />
+  const IconKeyS = () => <IconKey name='gamepad-numS' />
+  const IconKeyD = () => <IconKey name='gamepad-numD' />
+  const IconKeyZ = () => <IconKey name='gamepad-numZ' />
+  const IconKeyX = () => <IconKey name='gamepad-numX' />
+  const IconKeyC = () => <IconKey name='gamepad-numC' />
+
   return (
     <Modal show={props.show} onHide={props.handleHide}>
       <Modal.Header closeButton>
@@ -25,28 +28,44 @@ const GuideModal = (props: Props) => {
       </Modal.Header>
       <Modal.Body style={{ padding: '20px 40px' }}>
         <div>
-          <IconNum1 width='26' height='26' />
-          <span style={{ marginLeft: '10px' }}>Insert Coin</span>
-          <IconNum2 width='26' height='26' style={{ marginLeft: '20px' }} />
-          <span style={{ marginLeft: '20px' }}>Start</span>
+          <span>
+            <IconKeyCoin />
+            <span style={{ marginLeft: '10px' }}>Insert Coin</span>
+          </span>
+          <span style={{ marginLeft: '20px' }}>
+            <IconKeyStart />
+            <span style={{ marginLeft: '20px' }}>Start</span>
+          </span>
         </div>
         <div style={{ marginTop: '30px' }}>
           <div style={{ display: 'inline-block' }}>
             <div>
-              <IconKeyA width='26' height='26' />
-              <IconKeyD width='26' height='26' style={{ marginLeft: '10px' }} />
-              <IconKeyS width='26' height='26' style={{ marginLeft: '10px' }} />
+              <span>
+                <IconKeyA />
+              </span>
+              <span style={{ marginLeft: '10px' }}>
+                <IconKeyD />
+              </span>
+              <span style={{ marginLeft: '10px' }}>
+                <IconKeyS />
+              </span>
               <span style={{ marginLeft: '20px' }}>Button 1, 2, 3</span>
             </div>
             <div style={{ marginTop: '10px' }}>
-              <IconKeyZ width='26' height='26' />
-              <IconKeyX width='26' height='26' style={{ marginLeft: '10px' }} />
-              <IconKeyC width='26' height='26' style={{ marginLeft: '10px' }} />
+              <span>
+                <IconKeyZ />
+              </span>
+              <span style={{ marginLeft: '10px' }}>
+                <IconKeyX />
+              </span>
+              <span style={{ marginLeft: '10px' }}>
+                <IconKeyC />
+              </span>
               <span style={{ marginLeft: '20px' }}>Button 4, 5, 6</span>
             </div>
           </div>
           <div style={{ float: 'right', marginTop: '-6px' }}>
-            <IconArrows width='84' height='84' />
+            <IconArrows />
             <span style={{ marginLeft: '20px' }}>Move</span>
           </div>
         </div>
