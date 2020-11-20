@@ -13,6 +13,7 @@ import Icon from '../components/icon'
 import Layout from '../components/layout'
 import GamePlayer from '../components/game-player'
 import PlayerRegisterModal from '../components/player-register-modal'
+import GuideModal from '../components/guide-modal'
 
 import styles from './playing.module.css'
 
@@ -78,6 +79,7 @@ const Playing = () => {
   const router = useRouter()
 
   const [modalShow, setModalShow] = useState(false)
+  const [guideModalShow, setGuideModalShow] = useState(false)
   const [stream, setStream] = useState<MediaStream>()
   const [playerRect, setPlayerRect] = useState<PlayerRect>()
 
@@ -135,16 +137,31 @@ const Playing = () => {
             <GamePlayer stream={stream} />
             <div className={styles['orakki-switch']}>
               <div className={styles['switch-icon']}>
-                <Icon name='joystick' />
+                <Icon
+                  name='joystick'
+                  handleClick={() => {
+                    setGuideModalShow(true)
+                  }}
+                />
               </div>
               <div className={styles['switch-icon']}>
-                <Icon name='tickets' />
+                <Icon
+                  name='tickets'
+                  handleClick={() => {
+                    setGuideModalShow(true)
+                  }}
+                />
               </div>
             </div>
           </div>
         </div>
       </div>
       <PlayerRegisterModal show={modalShow} onSubmit={handleNewPlayer} />
+      <GuideModal
+        show={guideModalShow}
+        handleHide={() => {
+          setGuideModalShow(false)
+        }}></GuideModal>
     </Layout>
   )
 }
@@ -155,4 +172,5 @@ export default Playing
 // return {
 // props: {},
 // }
+// })
 // })
