@@ -1,7 +1,6 @@
 import React from 'react'
-import { useState, useEffect } from 'react'
 
-import { Modal, Button } from 'react-bootstrap'
+import { Modal } from 'react-bootstrap'
 import dynamic from 'next/dynamic'
 
 interface Props {
@@ -24,20 +23,32 @@ const GuideModal = (props: Props) => {
       <Modal.Header closeButton>
         <Modal.Title>Key Control Guide</Modal.Title>
       </Modal.Header>
-      <Modal.Body style={{ paddingTop: '5vh' }}>
-        <IconArrows width='80' height='80' style={{ marginLeft: '3vh' }} />
-        <span style={{ marginLeft: '1vh' }}>Move</span>
-        <IconNum1 width='26' height='26' style={{ marginLeft: '8vh' }} /> <span>Insert Coin</span>
-        <IconNum2 width='26' height='26' style={{ marginLeft: '8vh' }} /> <span>Start</span>
-        <div style={{ marginTop: '5vh' }}>
-          <IconKeyA width='26' height='26' style={{ marginLeft: '3vh' }} />
-          <IconKeyD width='26' height='26' style={{ marginLeft: '1vh' }} />
-          <IconKeyS width='26' height='26' style={{ marginLeft: '1vh' }} /> <span>Button 1, 2, 3</span>
+      <Modal.Body style={{ padding: '20px 40px' }}>
+        <div>
+          <IconNum1 width='26' height='26' />
+          <span style={{ marginLeft: '10px' }}>Insert Coin</span>
+          <IconNum2 width='26' height='26' style={{ marginLeft: '20px' }} />
+          <span style={{ marginLeft: '20px' }}>Start</span>
         </div>
-        <div style={{ marginTop: '1vh' }}>
-          <IconKeyZ width='26' height='26' style={{ marginLeft: '3vh' }} />
-          <IconKeyX width='26' height='26' style={{ marginLeft: '1vh' }} />
-          <IconKeyC width='26' height='26' style={{ marginLeft: '1vh' }} /> <span>Button 4, 5, 6</span>
+        <div style={{ marginTop: '30px' }}>
+          <div style={{ display: 'inline-block' }}>
+            <div>
+              <IconKeyA width='26' height='26' />
+              <IconKeyD width='26' height='26' style={{ marginLeft: '10px' }} />
+              <IconKeyS width='26' height='26' style={{ marginLeft: '10px' }} />
+              <span style={{ marginLeft: '20px' }}>Button 1, 2, 3</span>
+            </div>
+            <div style={{ marginTop: '10px' }}>
+              <IconKeyZ width='26' height='26' />
+              <IconKeyX width='26' height='26' style={{ marginLeft: '10px' }} />
+              <IconKeyC width='26' height='26' style={{ marginLeft: '10px' }} />
+              <span style={{ marginLeft: '20px' }}>Button 4, 5, 6</span>
+            </div>
+          </div>
+          <div style={{ float: 'right', marginTop: '-6px' }}>
+            <IconArrows width='84' height='84' />
+            <span style={{ marginLeft: '20px' }}>Move</span>
+          </div>
         </div>
       </Modal.Body>
     </Modal>
