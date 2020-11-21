@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useRouter } from 'next/router'
@@ -6,7 +6,7 @@ import Head from 'next/head'
 
 import { WebRTCSession } from '../lib/webrtcsession'
 import { RootState } from '../redux/store'
-import { newPlayer, canJoinGame } from '../redux/common/actions'
+import * as actions from '../redux/common/actions'
 import { setupSession } from '../redux/webrtc/actions'
 
 import Icon from '../components/icon'
@@ -37,13 +37,9 @@ const setupResizeHandler = (playerRectSetter: any) => {
   })
 }
 
-const setupKeyHandler = () => {
-  const handleKeyInput = (evt: any) => {
-    WebRTCSession.sendKeyInput(evt.which | evt.key, evt.type === 'keydown')
-  }
-
-  document.addEventListener('keyup', handleKeyInput)
-  document.addEventListener('keydown', handleKeyInput)
+const setupKeyHandler = (keyHandler: any) => {
+  document.addEventListener('keyup', keyHandler)
+  document.addEventListener('keydown', keyHandler)
 }
 
 const extractGameId = (query: any): number | null => {
@@ -80,6 +76,7 @@ const Playing = () => {
 
   const [modalShow, setModalShow] = useState(false)
   const [guideModalShow, setGuideModalShow] = useState(false)
+
   const [stream, setStream] = useState<MediaStream>()
   const [playerRect, setPlayerRect] = useState<PlayerRect>()
 
@@ -87,8 +84,25 @@ const Playing = () => {
   const game = useSelector((state: RootState) => state.common.game)
   const streamOpen = useSelector((state: RootState) => state.webrtc.mediaStreamOpen)
 
+  const coinsRef = useRef(player.numCoins)
+
   const handleNewPlayer = (playerName: string) => {
-    dispatch(newPlayer(playerName))
+    dispatch(actions.newPlayer(playerName))
+  }
+
+  const handleKeyInput = (evt: any) => {
+    const insertCoinKey = 49
+    const key = evt.which | evt.key
+    const isKeyDown = evt.type === 'keydown'
+    if (key === insertCoinKey && !isKeyDown) {
+      if (coinsRef.current > 0) {
+        dispatch(actions.incrementCoins(-1))
+      } else {
+        return
+      }
+    }
+
+    WebRTCSession.sendKeyInput(key, isKeyDown)
   }
 
   useEffect(() => {
@@ -105,16 +119,18 @@ const Playing = () => {
       return
     }
 
+    coinsRef.current = player.numCoins
+
     setModalShow(false)
 
     const gameId = extractGameId(router.query)
     if (gameId && !game.joinToken) {
-      dispatch(canJoinGame(gameId))
+      dispatch(actions.canJoinGame(gameId))
     }
   }, [player])
 
   useEffect(() => {
-    if (game.current && game.joinToken) {
+    if (!streamOpen && game.current && game.joinToken) {
       dispatch(setupSession(game.current.id, game.joinToken, player.turnUsername, player.turnPassword))
     }
   }, [player, game])
@@ -122,7 +138,8 @@ const Playing = () => {
   useEffect(() => {
     if (streamOpen) {
       setStream(WebRTCSession.getMediaStream())
-      setupKeyHandler()
+
+      setupKeyHandler(handleKeyInput)
     }
   }, [streamOpen])
 
@@ -134,23 +151,24 @@ const Playing = () => {
       <div className={styles['container']}>
         <div className={styles['orakki-box']}>
           <div className={styles['orakki-screen']} style={{ ...playerRect }}>
-            <GamePlayer stream={stream} />
+            <GamePlayer
+              stream={stream}
+              onAdsCompleted={() => {
+                dispatch(actions.incrementCoins(1))
+              }}
+            />
             <div className={styles['orakki-switch']}>
               <div className={styles['switch-icon']}>
                 <Icon
                   name='joystick'
-                  handleClick={() => {
+                  onClick={() => {
                     setGuideModalShow(true)
                   }}
                 />
               </div>
               <div className={styles['switch-icon']}>
-                <Icon
-                  name='tickets'
-                  handleClick={() => {
-                    setGuideModalShow(true)
-                  }}
-                />
+                <Icon name='tickets' />
+                <span className={styles['tickets-badge']}>{player.numCoins}</span>
               </div>
             </div>
           </div>

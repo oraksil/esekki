@@ -33,4 +33,16 @@
   fill: #ababab;
   display: inline-block;
   margin-left: 2vh;
+  position: relative;
+}
+
+.tickets-badge {
+  font-size: 1.5vh;
+  font-weight: 600;
+  padding: 0 0.8vh;
+  position: absolute;
+  bottom: -0.5vh;
+  right: -2vh;
+  border-radius: 16px;
+  background-color: yellow;
 }
