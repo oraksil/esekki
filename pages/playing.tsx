@@ -161,18 +161,17 @@ const Playing = () => {
               }}
             />
             <div className={styles.orakkiSwitch}>
-              <div className={styles.switchIcon}>
-                <Icon
-                  name='joystick'
-                  onClick={() => {
-                    setGuideModalShow(true)
-                  }}
-                />
-              </div>
-              <div className={styles.switchIcon}>
-                <Icon name='tickets' />
-                <span className={styles.ticketsBadge}>{player.numCoins}</span>
-              </div>
+              <Icon
+                name='question'
+                width='3.5vh'
+                height='3.5vh'
+                fill='black'
+                onClick={() => {
+                  setGuideModalShow(true)
+                }}
+              />
+              <Icon name='coins' width='4.2vh' height='4.2vh' fill='black' />
+              <span className={styles.ticketsBadge}>{player.numCoins}</span>
             </div>
           </div>
         </div>

@@ -2,8 +2,8 @@ import dynamic from 'next/dynamic'
 
 type Props = {
   name: string
-  width?: number
-  height?: number
+  width?: any
+  height?: any
   fill?: string
   className?: string
   style?: any

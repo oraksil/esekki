@@ -22,17 +22,9 @@
 }
 
 .orakkiSwitch {
-  float: right;
-  margin-top: 5.3vh;
-  margin-right: -2vh;
-}
-
-.switchIcon {
-  height: 4.5vh;
-  width: 4.5vh;
-  fill: #ababab;
-  display: inline-block;
-  margin-left: 2vh;
+  display: flex;
+  margin: 6vh -2vh 0 -2vh;
+  justify-content: space-between;
   position: relative;
 }
 
@@ -41,10 +33,11 @@
   font-weight: 600;
   padding: 0 0.8vh;
   position: absolute;
-  bottom: -0.5vh;
+  bottom: 0vh;
   right: -2vh;
+  border: 1px solid black;
   border-radius: 16px;
-  background-color: yellow;
+  background-color: #cdcdcd;
 }
 
 .noCoinToast {
