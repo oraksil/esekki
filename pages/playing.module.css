@@ -4,7 +4,7 @@
   min-height: 100vh;
 }
 
-.orakki-box {
+.orakkiBox {
   overflow: hidden;
   margin: 0 auto;
   height: 100%;
@@ -14,20 +14,20 @@
   background-size: auto 100%;
 }
 
-.orakki-screen {
+.orakkiScreen {
   margin: 0 auto;
   /* border: dimgray 2px solid; */
   border-radius: 8px;
   background-color: black;
 }
 
-.orakki-switch {
+.orakkiSwitch {
   float: right;
   margin-top: 5.3vh;
   margin-right: -2vh;
 }
 
-.switch-icon {
+.switchIcon {
   height: 4.5vh;
   width: 4.5vh;
   fill: #ababab;
@@ -36,7 +36,7 @@
   position: relative;
 }
 
-.tickets-badge {
+.ticketsBadge {
   font-size: 1.5vh;
   font-weight: 600;
   padding: 0 0.8vh;
@@ -45,4 +45,10 @@
   right: -2vh;
   border-radius: 16px;
   background-color: yellow;
+}
+
+.noCoinToast {
+  position: absolute;
+  top: 50px;
+  right: 30px;
 }

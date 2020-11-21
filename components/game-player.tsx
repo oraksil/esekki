@@ -109,11 +109,11 @@ const GamePlayer = (props: Props) => {
   }, [vjsPlayer, props.stream])
 
   return (
-    <div className={styles['player-container']}>
-      <div className={styles['player-video-wrapper']}>
+    <div className={styles.playerContainer}>
+      <div className={styles.playerVideoWrapper}>
         <video ref={videoRef} autoPlay={true} playsInline={true}></video>
       </div>
-      {playerVeil && <div className={styles['player-veil']} />}
+      {playerVeil && <div className={styles.playerVeil} />}
     </div>
   )
 }

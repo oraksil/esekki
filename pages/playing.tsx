@@ -4,6 +4,9 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
 
+import { Toast } from 'react-bootstrap'
+
+import { PlayerRect } from '../types/layout'
 import { WebRTCSession } from '../lib/webrtcsession'
 import { RootState } from '../redux/store'
 import * as actions from '../redux/common/actions'
@@ -16,8 +19,6 @@ import PlayerRegisterModal from '../components/player-register-modal'
 import GuideModal from '../components/guide-modal'
 
 import styles from './playing.module.css'
-
-import { PlayerRect } from '../types/layout'
 
 const PLAYER_PADDING_TOP_RATIO = 0.2375
 const PLAYER_HEIGHT_RATIO = 0.4771
@@ -76,6 +77,7 @@ const Playing = () => {
 
   const [modalShow, setModalShow] = useState(false)
   const [guideModalShow, setGuideModalShow] = useState(false)
+  const [coinAlertShow, setCoinAlertShow] = useState(false)
 
   const [stream, setStream] = useState<MediaStream>()
   const [playerRect, setPlayerRect] = useState<PlayerRect>()
@@ -98,6 +100,7 @@ const Playing = () => {
       if (coinsRef.current > 0) {
         dispatch(actions.incrementCoins(-1))
       } else {
+        setCoinAlertShow(true)
         return
       }
     }
@@ -148,17 +151,17 @@ const Playing = () => {
       <Head>
         <title>Hello</title>
       </Head>
-      <div className={styles['container']}>
-        <div className={styles['orakki-box']}>
-          <div className={styles['orakki-screen']} style={{ ...playerRect }}>
+      <div className={styles.container}>
+        <div className={styles.orakkiBox}>
+          <div className={styles.orakkiScreen} style={{ ...playerRect }}>
             <GamePlayer
               stream={stream}
               onAdsCompleted={() => {
                 dispatch(actions.incrementCoins(1))
               }}
             />
-            <div className={styles['orakki-switch']}>
-              <div className={styles['switch-icon']}>
+            <div className={styles.orakkiSwitch}>
+              <div className={styles.switchIcon}>
                 <Icon
                   name='joystick'
                   onClick={() => {
@@ -166,9 +169,9 @@ const Playing = () => {
                   }}
                 />
               </div>
-              <div className={styles['switch-icon']}>
+              <div className={styles.switchIcon}>
                 <Icon name='tickets' />
-                <span className={styles['tickets-badge']}>{player.numCoins}</span>
+                <span className={styles.ticketsBadge}>{player.numCoins}</span>
               </div>
             </div>
           </div>
@@ -179,7 +182,16 @@ const Playing = () => {
         show={guideModalShow}
         handleHide={() => {
           setGuideModalShow(false)
-        }}></GuideModal>
+        }}
+      />
+      <Toast
+        onClose={() => setCoinAlertShow(false)}
+        show={coinAlertShow}
+        delay={2000}
+        autohide
+        className={styles.noCoinToast}>
+        <Toast.Body>No coins.</Toast.Body>
+      </Toast>
     </Layout>
   )
 }
