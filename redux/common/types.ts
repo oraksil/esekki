@@ -6,6 +6,7 @@ export interface CommonState {
     current: Player | undefined | null
     turnUsername: string | null
     turnPassword: string | null
+    numCoins: number
   }
   game: {
     current: Game | undefined | null
@@ -85,4 +86,10 @@ export const NEW_USER_FEEDBACK_FAILED = 'NEW_USER_FEEDBACK_FAILED'
 export interface NewUserFeedbackFailed {
   type: typeof NEW_USER_FEEDBACK_FAILED
   payload: undefined
+}
+
+export const INCREMENT_COINS = 'INCREMENT_COINS'
+export interface IncrementCoins {
+  type: typeof INCREMENT_COINS
+  payload: number
 }

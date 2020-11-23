@@ -2,12 +2,12 @@ import dynamic from 'next/dynamic'
 
 type Props = {
   name: string
-  width?: number
-  height?: number
+  width?: any
+  height?: any
   fill?: string
   className?: string
   style?: any
-  handleClick?: (event: any) => void
+  onClick?: (event: any) => void
 }
 
 const Icon = (props: Props) => {
@@ -15,7 +15,7 @@ const Icon = (props: Props) => {
   // https://github.com/webpack/webpack/issues/6680#issuecomment-370800037
   const IconFromSvg: any = dynamic(() => import('../public/assets/icons/' + props.name + '.svg'))
   return (
-    <span className={props.className} style={props.style} onClick={props.handleClick}>
+    <span className={props.className} style={props.style} onClick={props.onClick}>
       <IconFromSvg width={props.width} height={props.height} fill={props.fill} />
     </span>
   )

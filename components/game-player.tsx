@@ -8,6 +8,7 @@ import styles from './game-player.module.css'
 
 interface Props {
   stream?: MediaStream
+  onAdsCompleted?: () => void
 }
 
 const initVideoJsPlayer = (videoRef: RefObject<HTMLVideoElement>) => {
@@ -42,7 +43,7 @@ const bindMediaStream = (vjsPlayer: videojs.Player, stream: MediaStream) => {
   videoElem.srcObject = stream
 }
 
-const setupPlayerIMA = (vjsPlayer: videojs.Player, playerVeilSetter: any) => {
+const setupPlayerIMA = (vjsPlayer: videojs.Player, playerVeilSetter: any, onAdsCompleted?: () => any) => {
   const unveilAndPlay = () => {
     vjsPlayer.load()
     vjsPlayer.play()
@@ -67,7 +68,12 @@ const setupPlayerIMA = (vjsPlayer: videojs.Player, playerVeilSetter: any) => {
     console.log('adsready')
     const completeEvents = [google.ima.AdEvent.Type.ALL_ADS_COMPLETED]
     completeEvents.forEach(evtType => {
-      player.ima.addEventListener(evtType, () => unveilAndPlay())
+      player.ima.addEventListener(evtType, () => {
+        if (onAdsCompleted) {
+          onAdsCompleted()
+        }
+        unveilAndPlay()
+      })
     })
   })
 }
@@ -81,7 +87,7 @@ const GamePlayer = (props: Props) => {
   useEffect(() => {
     const newPlayer = initVideoJsPlayer(videoRef)
 
-    setupPlayerIMA(newPlayer, setPlayerVeil)
+    setupPlayerIMA(newPlayer, setPlayerVeil, props.onAdsCompleted)
 
     bindMediaStream(newPlayer, blankMediaStream())
 
@@ -103,11 +109,11 @@ const GamePlayer = (props: Props) => {
   }, [vjsPlayer, props.stream])
 
   return (
-    <div className={styles['player-container']}>
-      <div className={styles['player-video-wrapper']}>
+    <div className={styles.playerContainer}>
+      <div className={styles.playerVideoWrapper}>
         <video ref={videoRef} autoPlay={true} playsInline={true}></video>
       </div>
-      {playerVeil && <div className={styles['player-veil']} />}
+      {playerVeil && <div className={styles.playerVeil} />}
     </div>
   )
 }

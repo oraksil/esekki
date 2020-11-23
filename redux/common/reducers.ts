@@ -7,6 +7,7 @@ const initialState: types.CommonState = {
     current: undefined,
     turnUsername: null,
     turnPassword: null,
+    numCoins: 1,
   },
   game: {
     current: undefined,
@@ -81,6 +82,14 @@ export const reducer = (state: types.CommonState = initialState, action: AnyActi
 
     case types.NEW_USER_FEEDBACK_FAILED: {
       return state
+    }
+
+    case types.INCREMENT_COINS: {
+      const delta = (action as types.IncrementCoins).payload
+      return {
+        ...state,
+        player: { ...state.player, numCoins: Math.max(state.player.numCoins + delta, 0) },
+      }
     }
 
     default:

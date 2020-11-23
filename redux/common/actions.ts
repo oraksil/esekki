@@ -187,3 +187,10 @@ export const newUserFeedback = (feedback: string) => (dispatch: Dispatch) => {
       dispatch(newUserFeedbackFailed())
     })
 }
+
+export const incrementCoins = (delta: number) => {
+  return {
+    type: types.INCREMENT_COINS,
+    payload: delta,
+  }
+}

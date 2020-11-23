@@ -1,12 +1,15 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
 
+import { Toast } from 'react-bootstrap'
+
+import { PlayerRect } from '../types/layout'
 import { WebRTCSession } from '../lib/webrtcsession'
 import { RootState } from '../redux/store'
-import { newPlayer, canJoinGame } from '../redux/common/actions'
+import * as actions from '../redux/common/actions'
 import { setupSession } from '../redux/webrtc/actions'
 
 import Icon from '../components/icon'
@@ -16,8 +19,6 @@ import PlayerRegisterModal from '../components/player-register-modal'
 import GuideModal from '../components/guide-modal'
 
 import styles from './playing.module.css'
-
-import { PlayerRect } from '../types/layout'
 
 const PLAYER_PADDING_TOP_RATIO = 0.2375
 const PLAYER_HEIGHT_RATIO = 0.4771
@@ -37,13 +38,9 @@ const setupResizeHandler = (playerRectSetter: any) => {
   })
 }
 
-const setupKeyHandler = () => {
-  const handleKeyInput = (evt: any) => {
-    WebRTCSession.sendKeyInput(evt.which | evt.key, evt.type === 'keydown')
-  }
-
-  document.addEventListener('keyup', handleKeyInput)
-  document.addEventListener('keydown', handleKeyInput)
+const setupKeyHandler = (keyHandler: any) => {
+  document.addEventListener('keyup', keyHandler)
+  document.addEventListener('keydown', keyHandler)
 }
 
 const extractGameId = (query: any): number | null => {
@@ -80,6 +77,8 @@ const Playing = () => {
 
   const [modalShow, setModalShow] = useState(false)
   const [guideModalShow, setGuideModalShow] = useState(false)
+  const [coinAlertShow, setCoinAlertShow] = useState(false)
+
   const [stream, setStream] = useState<MediaStream>()
   const [playerRect, setPlayerRect] = useState<PlayerRect>()
 
@@ -87,8 +86,26 @@ const Playing = () => {
   const game = useSelector((state: RootState) => state.common.game)
   const streamOpen = useSelector((state: RootState) => state.webrtc.mediaStreamOpen)
 
+  const coinsRef = useRef(player.numCoins)
+
   const handleNewPlayer = (playerName: string) => {
-    dispatch(newPlayer(playerName))
+    dispatch(actions.newPlayer(playerName))
+  }
+
+  const handleKeyInput = (evt: any) => {
+    const insertCoinKey = 49
+    const key = evt.which | evt.key
+    const isKeyDown = evt.type === 'keydown'
+    if (key === insertCoinKey && !isKeyDown) {
+      if (coinsRef.current > 0) {
+        dispatch(actions.incrementCoins(-1))
+      } else {
+        setCoinAlertShow(true)
+        return
+      }
+    }
+
+    WebRTCSession.sendKeyInput(key, isKeyDown)
   }
 
   useEffect(() => {
@@ -105,16 +122,18 @@ const Playing = () => {
       return
     }
 
+    coinsRef.current = player.numCoins
+
     setModalShow(false)
 
     const gameId = extractGameId(router.query)
     if (gameId && !game.joinToken) {
-      dispatch(canJoinGame(gameId))
+      dispatch(actions.canJoinGame(gameId))
     }
   }, [player])
 
   useEffect(() => {
-    if (game.current && game.joinToken) {
+    if (!streamOpen && game.current && game.joinToken) {
       dispatch(setupSession(game.current.id, game.joinToken, player.turnUsername, player.turnPassword))
     }
   }, [player, game])
@@ -122,7 +141,8 @@ const Playing = () => {
   useEffect(() => {
     if (streamOpen) {
       setStream(WebRTCSession.getMediaStream())
-      setupKeyHandler()
+
+      setupKeyHandler(handleKeyInput)
     }
   }, [streamOpen])
 
@@ -131,27 +151,27 @@ const Playing = () => {
       <Head>
         <title>Hello</title>
       </Head>
-      <div className={styles['container']}>
-        <div className={styles['orakki-box']}>
-          <div className={styles['orakki-screen']} style={{ ...playerRect }}>
-            <GamePlayer stream={stream} />
-            <div className={styles['orakki-switch']}>
-              <div className={styles['switch-icon']}>
-                <Icon
-                  name='joystick'
-                  handleClick={() => {
-                    setGuideModalShow(true)
-                  }}
-                />
-              </div>
-              <div className={styles['switch-icon']}>
-                <Icon
-                  name='tickets'
-                  handleClick={() => {
-                    setGuideModalShow(true)
-                  }}
-                />
-              </div>
+      <div className={styles.container}>
+        <div className={styles.orakkiBox}>
+          <div className={styles.orakkiScreen} style={{ ...playerRect }}>
+            <GamePlayer
+              stream={stream}
+              onAdsCompleted={() => {
+                dispatch(actions.incrementCoins(1))
+              }}
+            />
+            <div className={styles.orakkiSwitch}>
+              <Icon
+                name='question'
+                width='3.5vh'
+                height='3.5vh'
+                fill='black'
+                onClick={() => {
+                  setGuideModalShow(true)
+                }}
+              />
+              <Icon name='coins' width='4.2vh' height='4.2vh' fill='black' />
+              <span className={styles.ticketsBadge}>{player.numCoins}</span>
             </div>
           </div>
         </div>
@@ -161,7 +181,16 @@ const Playing = () => {
         show={guideModalShow}
         handleHide={() => {
           setGuideModalShow(false)
-        }}></GuideModal>
+        }}
+      />
+      <Toast
+        onClose={() => setCoinAlertShow(false)}
+        show={coinAlertShow}
+        delay={2000}
+        autohide
+        className={styles.noCoinToast}>
+        <Toast.Body>No coins.</Toast.Body>
+      </Toast>
     </Layout>
   )
 }
