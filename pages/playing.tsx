@@ -154,12 +154,7 @@ const Playing = () => {
       <div className={styles.container}>
         <div className={styles.orakkiBox}>
           <div className={styles.orakkiScreen} style={{ ...playerRect }}>
-            <GamePlayer
-              stream={stream}
-              onAdsCompleted={() => {
-                dispatch(actions.incrementCoins(1))
-              }}
-            />
+            <GamePlayer stream={stream} />
             <div className={styles.orakkiSwitch}>
               <Icon
                 name='question'
