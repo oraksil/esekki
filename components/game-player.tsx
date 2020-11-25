@@ -47,8 +47,12 @@ const GamePlayer = (props: Props) => {
   useEffect(() => {
     if (vjsPlayer && props.stream) {
       bindMediaStream(vjsPlayer, props.stream)
+
+      vjsPlayer.on('firstplay', () => {
+        setPlayerVeil(false)
+      })
+
       vjsPlayer.play()
-      setPlayerVeil(false)
     }
   }, [vjsPlayer, props.stream])
 
