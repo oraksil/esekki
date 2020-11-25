@@ -6,7 +6,7 @@ COPY . /deploy
 
 RUN npm ci
 
-ENV NEXT_PUBLIC_API_BASEURL=http://api.oraksil.fun
+ENV NEXT_PUBLIC_API_BASEURL=https://api.oraksil.fun
 RUN npm run build
 
 EXPOSE 3000
