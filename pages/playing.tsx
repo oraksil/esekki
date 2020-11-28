@@ -8,7 +8,7 @@ import { Toast } from 'react-bootstrap'
 
 import { PlayerRect } from '../types/layout'
 import { WebRTCSession } from '../lib/webrtcsession'
-import { RootState } from '../redux/store'
+import { RootState, wrapper } from '../redux/store'
 import * as actions from '../redux/common/actions'
 import { setupSession } from '../redux/webrtc/actions'
 
@@ -19,6 +19,8 @@ import PlayerRegisterModal from '../components/player-register-modal'
 import GuideModal from '../components/guide-modal'
 
 import styles from './playing.module.css'
+
+import * as consts from '../lib/constants'
 
 const PLAYER_PADDING_TOP_RATIO = 0.2375
 const PLAYER_HEIGHT_RATIO = 0.4771
@@ -71,7 +73,9 @@ const extractGameId = (query: any): number | null => {
 //
 //   3. If ok, let's go set up webrtc session and play.
 ////////////////////////////////////////////////////////////////////////////////
-const Playing = () => {
+const Playing = (props: any) => {
+  const { pageTitle, ogImgUrl, ogDesc } = props
+
   const dispatch = useDispatch()
   const router = useRouter()
 
@@ -113,11 +117,7 @@ const Playing = () => {
   }, [])
 
   useEffect(() => {
-    if (player.current === undefined) {
-      return
-    }
-
-    if (player.current === null) {
+    if (player.loaded && player.current === null) {
       setModalShow(true)
       return
     }
@@ -130,7 +130,7 @@ const Playing = () => {
     if (gameId && !game.joinToken) {
       dispatch(actions.canJoinGame(gameId))
     }
-  }, [player])
+  }, [router.query, player])
 
   useEffect(() => {
     if (!streamOpen && game.current && game.joinToken) {
@@ -149,7 +149,9 @@ const Playing = () => {
   return (
     <Layout>
       <Head>
-        <title>Hello</title>
+        <title>{pageTitle}</title>
+        <meta property='og:image' content={ogImgUrl} />
+        <meta name='description' content={ogDesc} />
       </Head>
       <div className={styles.container}>
         <div className={styles.orakkiBox}>
@@ -192,9 +194,8 @@ const Playing = () => {
 
 export default Playing
 
-// export const getStaticProps = wrapper.getStaticProps(async ({ store }) => {
-// return {
-// props: {},
-// }
-// })
-// })
+export const getStaticProps = wrapper.getStaticProps(async ({}) => {
+  return {
+    props: { pageTitle: 'Live Game', ogImgUrl: consts.OG_DEFAULT_IMG_URL, ogDesc: consts.OG_DEFAULT_DESC },
+  }
+})

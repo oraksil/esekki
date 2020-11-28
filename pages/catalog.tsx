@@ -57,11 +57,7 @@ const Catalog = () => {
       return
     }
 
-    if (player.current === undefined) {
-      return
-    }
-
-    if (player.current === null) {
+    if (player.loaded && player.current === null) {
       setNewPlayerModalShow(true)
       return
     }
@@ -82,7 +78,7 @@ const Catalog = () => {
   return (
     <Layout>
       <Head>
-        <title>Go enjoy with games!</title>
+        <title>Welcome to Oraksil!</title>
       </Head>
       <Navbar bg='dark' variant='dark'>
         <Navbar.Brand href='#home'>

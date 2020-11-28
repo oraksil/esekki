@@ -6,7 +6,6 @@ import { composeWithDevTools } from 'redux-devtools-extension'
 
 import { reducer as commonReducer } from './common/reducers'
 import { reducer as webrtcReducer } from './webrtc/reducers'
-// import { catalogReducer } from './common/reducers';
 
 import mySaga from './common/sagas'
 import webrtcSaga from './webrtc/sagas'
@@ -14,7 +13,6 @@ import webrtcSaga from './webrtc/sagas'
 const rootReducer = combineReducers({
   common: commonReducer,
   webrtc: webrtcReducer,
-  // catalog: catalogReducer,
 })
 
 export type RootState = ReturnType<typeof rootReducer>

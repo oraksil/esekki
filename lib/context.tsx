@@ -12,7 +12,7 @@ export const PlayerResolver = (props: any) => {
   const player = useSelector((state: RootState) => state.common.player)
 
   useEffect(() => {
-    if (player.current === undefined) {
+    if (!player.loaded) {
       dispatch(getPlayer())
     }
   }, [])
