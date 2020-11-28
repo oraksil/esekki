@@ -4,14 +4,15 @@ import * as types from './types'
 
 const initialState: types.CommonState = {
   player: {
-    current: undefined,
+    current: null,
+    loaded: false,
     turnUsername: null,
     turnPassword: null,
     numCoins: 1,
   },
   game: {
-    current: undefined,
-    joinToken: undefined,
+    current: null,
+    joinToken: null,
   },
   packs: [],
 }
@@ -24,11 +25,11 @@ export const reducer = (state: types.CommonState = initialState, action: AnyActi
 
     case types.GET_PLAYER_OK: {
       const player = (action as types.GetPlayerOk).payload
-      return { ...state, player: { ...state.player, current: player } }
+      return { ...state, player: { ...state.player, current: player, loaded: true } }
     }
 
     case types.GET_PLAYER_FAILED: {
-      return { ...state, player: { ...state.player, current: null } }
+      return { ...state, player: { ...state.player, current: null, loaded: true } }
     }
 
     case types.NEW_PLAYER_OK: {
@@ -46,7 +47,7 @@ export const reducer = (state: types.CommonState = initialState, action: AnyActi
     }
 
     case types.NEW_PLAYER_FAILED: {
-      return { ...state, player: { ...state.player, current: null } }
+      return { ...state, player: { ...state.player, current: null, loaded: true } }
     }
 
     case types.START_NEW_GAME_OK: {

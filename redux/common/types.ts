@@ -3,14 +3,15 @@ import { Pack, Game, Player, Joinable } from '../../types/game'
 // State
 export interface CommonState {
   player: {
-    current: Player | undefined | null
+    current: Player | null
+    loaded: boolean
     turnUsername: string | null
     turnPassword: string | null
     numCoins: number
   }
   game: {
-    current: Game | undefined | null
-    joinToken: string | undefined | null
+    current: Game | null
+    joinToken: string | null
   }
   packs: Array<Pack>
 }
