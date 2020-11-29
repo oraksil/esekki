@@ -67,13 +67,13 @@ const Catalog = () => {
     if (selectedPack) {
       dispatch(startNewGame(selectedPack.id))
     }
-  }, [player, selectedPack])
+  }, [selectedPack, player])
 
   useEffect(() => {
-    if (game?.current) {
+    if (selectedPack && game?.current) {
       router.push(`/playing?g=${game.current.id}`)
     }
-  }, [game])
+  }, [selectedPack, game])
 
   return (
     <Layout>

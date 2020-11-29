@@ -117,7 +117,11 @@ const Playing = (props: any) => {
   }, [])
 
   useEffect(() => {
-    if (player.loaded && player.current === null) {
+    if (!player.loaded) {
+      return
+    }
+
+    if (player.current === null) {
       setModalShow(true)
       return
     }
