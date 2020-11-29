@@ -133,18 +133,15 @@ const Playing = (props: any) => {
   }, [router.query, player])
 
   useEffect(() => {
-    if (!streamOpen && game.current && game.joinToken) {
-      dispatch(setupSession(game.current.id, game.joinToken, player.turnUsername, player.turnPassword))
-    }
-  }, [player, game])
-
-  useEffect(() => {
-    if (streamOpen) {
+    if (!streamOpen) {
+      if (game.current && game.joinToken) {
+        dispatch(setupSession(game.current.id, game.joinToken, player.turnUsername, player.turnPassword))
+      }
+    } else {
       setStream(WebRTCSession.getMediaStream())
-
       setupKeyHandler(handleKeyInput)
     }
-  }, [streamOpen])
+  }, [streamOpen, game])
 
   return (
     <Layout>

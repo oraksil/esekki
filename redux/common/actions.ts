@@ -20,20 +20,17 @@ const getPlayerFailed = (): types.GetPlayerFailed => {
   }
 }
 
-export const getPlayer = () => (dispatch: Dispatch) => {
-  axios
-    .get(`/api/v1/players/me`)
-    .then(res => {
-      const jsend: Jsend = res.data
-      if (jsend.status === 'success') {
-        dispatch(getPlayerOk(jsend.data))
-      } else {
-        dispatch(getPlayerFailed())
-      }
-    })
-    .catch(_ => {
+export const getPlayer = () => async (dispatch: Dispatch) => {
+  try {
+    const jsend: Jsend = (await axios.get(`/api/v1/players/me`)).data
+    if (jsend.status === 'success') {
+      dispatch(getPlayerOk(jsend.data))
+    } else {
       dispatch(getPlayerFailed())
-    })
+    }
+  } catch (e) {
+    dispatch(getPlayerFailed())
+  }
 }
 
 const newPlayerOk = (player: Player): types.NewPlayerOk => {
@@ -50,20 +47,17 @@ const newPlayerFailed = (): types.NewPlayerFailed => {
   }
 }
 
-export const newPlayer = (name: string) => (dispatch: Dispatch) => {
-  axios
-    .post(`/api/v1/players/new`, { name })
-    .then(res => {
-      const jsend: Jsend = res.data
-      if (jsend.status === 'success') {
-        dispatch(newPlayerOk(jsend.data))
-      } else {
-        dispatch(newPlayerFailed())
-      }
-    })
-    .catch(_ => {
+export const newPlayer = (name: string) => async (dispatch: Dispatch) => {
+  try {
+    const jsend: Jsend = (await axios.post(`/api/v1/players/new`, { name })).data
+    if (jsend.status === 'success') {
+      dispatch(newPlayerOk(jsend.data))
+    } else {
       dispatch(newPlayerFailed())
-    })
+    }
+  } catch (e) {
+    dispatch(newPlayerFailed())
+  }
 }
 
 const canJoinGameOk = (joinable: Joinable): types.CanJoinGameOk => {
@@ -80,21 +74,18 @@ const canJoinGameFailed = (): types.CanJoinGameFailed => {
   }
 }
 
-export const canJoinGame = (gameId: number) => (dispatch: Dispatch) => {
-  axios
-    .get(`/api/v1/games/${gameId}/joinable`)
-    .then(res => {
-      const jsend: Jsend = res.data
-      if (jsend.status === 'success') {
-        const joinable: Joinable = { ...jsend.data, gameId }
-        dispatch(canJoinGameOk(joinable))
-      } else {
-        dispatch(canJoinGameFailed())
-      }
-    })
-    .catch(_ => {
+export const canJoinGame = (gameId: number) => async (dispatch: Dispatch) => {
+  try {
+    const jsend: Jsend = (await axios.get(`/api/v1/games/${gameId}/joinable`)).data
+    if (jsend.status === 'success') {
+      const joinable: Joinable = { ...jsend.data, gameId }
+      dispatch(canJoinGameOk(joinable))
+    } else {
       dispatch(canJoinGameFailed())
-    })
+    }
+  } catch (e) {
+    dispatch(canJoinGameFailed())
+  }
 }
 
 const startNewGameOk = (game: Game): types.StartNewGameOk => {
@@ -111,20 +102,17 @@ const startNewGameFailed = (): types.StartNewGameFailed => {
   }
 }
 
-export const startNewGame = (packId: number) => (dispatch: Dispatch) => {
-  axios
-    .post(`/api/v1/packs/${packId}/new`)
-    .then(res => {
-      const jsend: Jsend = res.data
-      if (jsend.status === 'success') {
-        dispatch(startNewGameOk(jsend.data))
-      } else {
-        dispatch(startNewGameFailed())
-      }
-    })
-    .catch(_ => {
+export const startNewGame = (packId: number) => async (dispatch: Dispatch) => {
+  try {
+    const jsend: Jsend = (await axios.post(`/api/v1/packs/${packId}/new`)).data
+    if (jsend.status === 'success') {
+      dispatch(startNewGameOk(jsend.data))
+    } else {
       dispatch(startNewGameFailed())
-    })
+    }
+  } catch (e) {
+    dispatch(startNewGameFailed())
+  }
 }
 
 const getPacksOk = (packs: Array<Pack>): types.GetPacksOk => {
@@ -141,21 +129,18 @@ const getPacksFailed = (): types.GetPacksFailed => {
   }
 }
 
-export const getPacks = (statusFilter?: string) => (dispatch: Dispatch) => {
+export const getPacks = (statusFilter?: string) => async (dispatch: Dispatch) => {
   let url = '/api/v1/packs'
   if (statusFilter && ['ready', 'prepare'].includes(statusFilter)) {
     url += `?status=${statusFilter}`
   }
 
-  axios
-    .get(url)
-    .then(res => {
-      const jsend: Jsend = res.data
-      dispatch(getPacksOk(jsend.data))
-    })
-    .catch(_ => {
-      dispatch(getPacksFailed())
-    })
+  try {
+    const jsend: Jsend = (await axios.get(url)).data
+    dispatch(getPacksOk(jsend.data))
+  } catch (e) {
+    dispatch(getPacksFailed())
+  }
 }
 
 const newUserFeedbackOk = (): types.NewUserFeedbackOk => {
@@ -172,20 +157,17 @@ const newUserFeedbackFailed = (): types.NewUserFeedbackFailed => {
   }
 }
 
-export const newUserFeedback = (feedback: string) => (dispatch: Dispatch) => {
-  axios
-    .post(`/api/v1/feedbacks/new`, { feedback })
-    .then(res => {
-      const jsend: Jsend = res.data
-      if (jsend.status === 'success') {
-        dispatch(newUserFeedbackOk())
-      } else {
-        dispatch(newUserFeedbackFailed())
-      }
-    })
-    .catch(_ => {
+export const newUserFeedback = (feedback: string) => async (dispatch: Dispatch) => {
+  try {
+    const jsend: Jsend = (await axios.post(`/api/v1/feedbacks/new`, { feedback })).data
+    if (jsend.status === 'success') {
+      dispatch(newUserFeedbackOk())
+    } else {
       dispatch(newUserFeedbackFailed())
-    })
+    }
+  } catch (e) {
+    dispatch(newUserFeedbackFailed())
+  }
 }
 
 export const incrementCoins = (delta: number) => {

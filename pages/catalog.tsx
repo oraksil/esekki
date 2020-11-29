@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useRouter } from 'next/router'
-import { RootState } from '../redux/store'
+import { RootState, wrapper } from '../redux/store'
 import { getPacks, newPlayer, startNewGame, newUserFeedback } from '../redux/common/actions'
 import { Pack } from '../types/game'
 
@@ -132,3 +132,8 @@ const Catalog = () => {
 }
 
 export default Catalog
+
+export const getStaticProps = wrapper.getStaticProps(async ({ store }) => {
+  await getPacks()(store.dispatch)
+  return {}
+})
