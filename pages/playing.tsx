@@ -26,32 +26,6 @@ const PLAYER_PADDING_TOP_RATIO = 0.2375
 const PLAYER_HEIGHT_RATIO = 0.4771
 const PLAYER_ASPECT_RATIO = 1.3352
 
-const setupResizeHandler = (playerRectSetter: any) => {
-  const calculatePlayerRect = (windowHeight: number): PlayerRect => {
-    const marginTop = windowHeight * PLAYER_PADDING_TOP_RATIO
-    const height = windowHeight * PLAYER_HEIGHT_RATIO
-    const width = height * PLAYER_ASPECT_RATIO
-    return { marginTop, width, height }
-  }
-
-  playerRectSetter(calculatePlayerRect(window.innerHeight))
-  window.addEventListener('resize', () => {
-    playerRectSetter(calculatePlayerRect(window.innerHeight))
-  })
-}
-
-const setupKeyHandler = (keyHandler: any) => {
-  document.addEventListener('keyup', keyHandler)
-  document.addEventListener('keydown', keyHandler)
-}
-
-const extractGameId = (query: any): number | null => {
-  if (query.g) {
-    return parseInt(query.g as string)
-  }
-  return null
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 // Design Concept
 //
@@ -88,12 +62,25 @@ const Playing = (props: any) => {
 
   const player = useSelector((state: RootState) => state.common.player)
   const game = useSelector((state: RootState) => state.common.game)
+
   const streamOpen = useSelector((state: RootState) => state.webrtc.mediaStreamOpen)
+  const turnUsername = useSelector((state: RootState) => state.webrtc.turnUsername)
+  const turnPassword = useSelector((state: RootState) => state.webrtc.turnPassword)
 
   const coinsRef = useRef(player.numCoins)
 
-  const handleNewPlayer = (playerName: string) => {
-    dispatch(actions.newPlayer(playerName))
+  const setupResizeHandler = () => {
+    const calculatePlayerRect = (windowHeight: number): PlayerRect => {
+      const marginTop = windowHeight * PLAYER_PADDING_TOP_RATIO
+      const height = windowHeight * PLAYER_HEIGHT_RATIO
+      const width = height * PLAYER_ASPECT_RATIO
+      return { marginTop, width, height }
+    }
+
+    setPlayerRect(calculatePlayerRect(window.innerHeight))
+    window.addEventListener('resize', () => {
+      setPlayerRect(calculatePlayerRect(window.innerHeight))
+    })
   }
 
   const handleKeyInput = (evt: any) => {
@@ -112,11 +99,23 @@ const Playing = (props: any) => {
     WebRTCSession.sendKeyInput(key, isKeyDown)
   }
 
-  useEffect(() => {
-    setupResizeHandler(setPlayerRect)
-  }, [])
+  const setupKeyHandler = () => {
+    document.addEventListener('keyup', handleKeyInput)
+    document.addEventListener('keydown', handleKeyInput)
+  }
 
-  useEffect(() => {
+  const extractGameIdFromRouter = (): number | null => {
+    if (router.query.g) {
+      return parseInt(router.query.g as string)
+    }
+    return null
+  }
+
+  const handleNewPlayer = (playerName: string) => {
+    dispatch(actions.newPlayer(playerName))
+  }
+
+  const getJoinTokenAndTurnAuth = () => {
     if (!player.loaded) {
       return
     }
@@ -130,22 +129,30 @@ const Playing = (props: any) => {
 
     setModalShow(false)
 
-    const gameId = extractGameId(router.query)
+    const gameId = extractGameIdFromRouter()
     if (gameId && !game.joinToken) {
       dispatch(actions.canJoinGame(gameId))
     }
-  }, [router.query, player])
+  }
+
+  useEffect(() => {
+    setupResizeHandler()
+  }, [])
+
+  useEffect(() => {
+    getJoinTokenAndTurnAuth()
+  }, [player, router])
 
   useEffect(() => {
     if (!streamOpen) {
       if (game.current && game.joinToken) {
-        dispatch(setupSession(game.current.id, game.joinToken, player.turnUsername, player.turnPassword))
+        dispatch(setupSession(game.current.id, game.joinToken, turnUsername, turnPassword))
       }
     } else {
       setStream(WebRTCSession.getMediaStream())
-      setupKeyHandler(handleKeyInput)
+      setupKeyHandler()
     }
-  }, [streamOpen, game])
+  }, [game, streamOpen])
 
   return (
     <Layout>

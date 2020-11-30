@@ -6,8 +6,6 @@ const initialState: types.CommonState = {
   player: {
     current: null,
     loaded: false,
-    turnUsername: null,
-    turnPassword: null,
     numCoins: 1,
   },
   game: {
@@ -20,7 +18,7 @@ const initialState: types.CommonState = {
 export const reducer = (state: types.CommonState = initialState, action: AnyAction): types.CommonState => {
   switch (action.type) {
     case HYDRATE: {
-      return { ...state, ...action.payload.common }
+      return { ...state }
     }
 
     case types.GET_PLAYER_OK: {
@@ -34,7 +32,7 @@ export const reducer = (state: types.CommonState = initialState, action: AnyActi
 
     case types.NEW_PLAYER_OK: {
       const player = (action as types.NewPlayerOk).payload
-      return { ...state, player: { ...state.player, current: player } }
+      return { ...state, player: { ...state.player, current: player, loaded: true } }
     }
 
     case types.GET_PACKS_OK: {
@@ -52,11 +50,11 @@ export const reducer = (state: types.CommonState = initialState, action: AnyActi
 
     case types.START_NEW_GAME_OK: {
       const game = (action as types.StartNewGameOk).payload
-      return { ...state, game: { ...state.game, current: game } }
+      return { ...state, game: { ...state.game, current: game, joinToken: null } }
     }
 
     case types.START_NEW_GAME_FAILED: {
-      return { ...state, game: { ...state.game, current: null } }
+      return { ...state, game: { ...state.game, current: null, joinToken: null } }
     }
 
     case types.CAN_JOIN_GAME_OK: {
@@ -64,7 +62,7 @@ export const reducer = (state: types.CommonState = initialState, action: AnyActi
       const curGame = { ...state.game.current, id: joinable.gameId }
       return {
         ...state,
-        player: { ...state.player, turnUsername: joinable.username, turnPassword: joinable.password },
+        player: { ...state.player },
         game: { current: curGame, joinToken: joinable.token },
       }
     }
@@ -72,7 +70,7 @@ export const reducer = (state: types.CommonState = initialState, action: AnyActi
     case types.CAN_JOIN_GAME_FAILED: {
       return {
         ...state,
-        player: { ...state.player, turnUsername: null, turnPassword: null },
+        player: { ...state.player },
         game: { current: state.game.current, joinToken: null },
       }
     }

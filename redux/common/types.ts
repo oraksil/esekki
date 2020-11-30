@@ -5,8 +5,6 @@ export interface CommonState {
   player: {
     current: Player | null
     loaded: boolean
-    turnUsername: string | null
-    turnPassword: string | null
     numCoins: number
   }
   game: {

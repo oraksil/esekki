@@ -1,6 +1,8 @@
 // State
 export interface WebRTCState {
   mediaStreamOpen: boolean
+  turnUsername: string | null
+  turnPassword: string | null
 }
 
 // Action
