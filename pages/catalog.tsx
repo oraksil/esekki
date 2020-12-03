@@ -67,7 +67,7 @@ const Catalog = () => {
     if (selectedPack) {
       dispatch(startNewGame(selectedPack.id))
     }
-  }, [selectedPack])
+  }, [selectedPack, player])
 
   useEffect(() => {
     if (selectedPack && game?.current) {
