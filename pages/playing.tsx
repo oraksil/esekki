@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React from 'react'
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useRouter } from 'next/router'
@@ -67,8 +67,6 @@ const Playing = (props: any) => {
   const turnUsername = useSelector((state: RootState) => state.webrtc.turnUsername)
   const turnPassword = useSelector((state: RootState) => state.webrtc.turnPassword)
 
-  const coinsRef = useRef(player.numCoins)
-
   const setupResizeHandler = () => {
     const calculatePlayerRect = (windowHeight: number): PlayerRect => {
       const marginTop = windowHeight * PLAYER_PADDING_TOP_RATIO
@@ -88,8 +86,8 @@ const Playing = (props: any) => {
     const key = evt.which | evt.key
     const isKeyDown = evt.type === 'keydown'
     if (key === insertCoinKey && !isKeyDown) {
-      if (coinsRef.current > 0) {
-        dispatch(actions.incrementCoins(-1))
+      if (player.current && player.current.lastCoins > 0) {
+        dispatch(actions.insertCoin())
       } else {
         setCoinAlertShow(true)
         return
@@ -125,7 +123,7 @@ const Playing = (props: any) => {
       return
     }
 
-    coinsRef.current = player.numCoins
+    // coinsRef.current = player.current.lastCoins
 
     setModalShow(false)
 
@@ -176,7 +174,7 @@ const Playing = (props: any) => {
                 }}
               />
               <Icon name='coins' width='4.2vh' height='4.2vh' fill='black' />
-              <span className={styles.ticketsBadge}>{player.numCoins}</span>
+              <span className={styles.ticketsBadge}>{player.current?.lastCoins}</span>
             </div>
           </div>
         </div>

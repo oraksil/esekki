@@ -14,9 +14,8 @@ interface Props {
 
 const PreparingGameCard = (props: Props) => {
   const { pack, flip, onSuggest } = props
-  const suggestMode = flip === true
 
-  if (suggestMode) {
+  if (flip) {
     return (
       <Card className='h-100 flex-row' bg='light'>
         <Card.Body className='text-center align-self-center'>
@@ -30,11 +29,11 @@ const PreparingGameCard = (props: Props) => {
 
   return (
     <Card>
-      <Card.Img variant='top' style={{ height: '15rem' }} src={pack?.poster_url} />
+      <Card.Img variant='top' style={{ height: '15rem' }} src={pack?.posterUrl} />
       <Card.Body>
         <Card.Title style={{ fontSize: '1.2em' }}>{pack?.title}</Card.Title>
         <Card.Text>{pack?.maker}</Card.Text>
-        <Card.Text>{pack?.max_players} Players</Card.Text>
+        <Card.Text>{pack?.maxPlayers} Players</Card.Text>
         <Button variant='light' disabled>
           Preparing
         </Button>

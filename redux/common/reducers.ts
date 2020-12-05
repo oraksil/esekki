@@ -6,7 +6,6 @@ const initialState: types.CommonState = {
   player: {
     current: null,
     loaded: false,
-    numCoins: 1,
   },
   game: {
     current: null,
@@ -83,11 +82,12 @@ export const reducer = (state: types.CommonState = initialState, action: AnyActi
       return state
     }
 
-    case types.INCREMENT_COINS: {
-      const delta = (action as types.IncrementCoins).payload
+    case types.INSERT_COIN_OK: {
+      const payload = (action as types.InsertCoinOk).payload
+      const curPlayer = { ...state.player.current, ...payload } as any
       return {
         ...state,
-        player: { ...state.player, numCoins: Math.max(state.player.numCoins + delta, 0) },
+        player: { ...state.player, current: curPlayer },
       }
     }
 
