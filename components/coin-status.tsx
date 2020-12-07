@@ -12,7 +12,7 @@ interface Props {
 }
 
 const MAX_COINS = 5
-const TIME_TO_CHARGE_IN_SECS = 30 // 10 * 60
+const TIME_TO_CHARGE_IN_SECS = 10 * 60
 const nowInUnixSecs = () => Math.ceil(new Date().getTime() / 1000)
 const secsToFormattedTime = (seconds: number) => {
   return new Date(seconds * 1000).toISOString().substr(14, 5)
