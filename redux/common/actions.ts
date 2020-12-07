@@ -170,10 +170,13 @@ export const newUserFeedback = (feedback: string) => async (dispatch: Dispatch) 
   }
 }
 
-const insertCoinOk = (lastCoins: number, lastCoinsUsedAt: number): types.InsertCoinOk => {
+const insertCoinOk = (
+  coinsUsedInCharging: number,
+  chargingStartedAt: number
+): types.InsertCoinOk => {
   return {
     type: types.INSERT_COIN_OK,
-    payload: { lastCoins, lastCoinsUsedAt },
+    payload: { coinsUsedInCharging, chargingStartedAt },
   }
 }
 
@@ -184,16 +187,19 @@ const insertCoinFailed = (): types.InsertCoinFailed => {
   }
 }
 
-export const insertCoin = () => async (dispatch: Dispatch) => {
+export const insertCoin = (okCallback: any, failedCallback: any) => async (dispatch: Dispatch) => {
   try {
     const jsend: Jsend = (await axios.post(`/api/v1/players/coins/use`)).data
     if (jsend.status === 'success') {
-      const { lastCoins, lastCoinsUsedAt } = jsend.data
-      dispatch(insertCoinOk(lastCoins, lastCoinsUsedAt))
+      const { coinsUsedInCharging, chargingStartedAt } = jsend.data
+      dispatch(insertCoinOk(coinsUsedInCharging, chargingStartedAt))
+      okCallback()
     } else {
       dispatch(insertCoinFailed())
+      failedCallback()
     }
   } catch (e) {
     dispatch(insertCoinFailed())
+    failedCallback()
   }
 }

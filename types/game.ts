@@ -2,8 +2,8 @@ export interface Player {
   id: number
   name: string
   hash: string
-  lastCoins: number
-  lastCoinsUsedAt: number
+  coinsUsedInCharging: number
+  chargingStartedAt: number
 }
 
 export interface Pack {

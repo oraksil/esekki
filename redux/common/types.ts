@@ -96,8 +96,8 @@ export const INSERT_COIN_OK = 'INSERT_COIN_OK'
 export interface InsertCoinOk {
   type: typeof INSERT_COIN_OK
   payload: {
-    lastCoins: number
-    lastCoinsUsedAt: number
+    coinsUsedInCharging: number
+    chargingStartedAt: number
   }
 }
 

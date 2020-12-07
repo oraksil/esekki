@@ -17,6 +17,7 @@ import Layout from '../components/layout'
 import GamePlayer from '../components/game-player'
 import PlayerRegisterModal from '../components/player-register-modal'
 import GuideModal from '../components/guide-modal'
+import CoinStatus from '../components/coin-status'
 
 import styles from './playing.module.css'
 
@@ -85,16 +86,28 @@ const Playing = (props: any) => {
     const insertCoinKey = 49
     const key = evt.which | evt.key
     const isKeyDown = evt.type === 'keydown'
-    if (key === insertCoinKey && !isKeyDown) {
-      if (player.current && player.current.lastCoins > 0) {
-        dispatch(actions.insertCoin())
-      } else {
-        setCoinAlertShow(true)
+    if (key === insertCoinKey) {
+      if (isKeyDown) {
         return
       }
-    }
 
-    WebRTCSession.sendKeyInput(key, isKeyDown)
+      dispatch(
+        actions.insertCoin(
+          () => {
+            // emulate key down and up
+            WebRTCSession.sendKeyInput(key, true)
+            setTimeout(() => {
+              WebRTCSession.sendKeyInput(key, false)
+            }, 50)
+          },
+          () => {
+            setCoinAlertShow(true)
+          }
+        )
+      )
+    } else {
+      WebRTCSession.sendKeyInput(key, isKeyDown)
+    }
   }
 
   const setupKeyHandler = () => {
@@ -164,17 +177,25 @@ const Playing = (props: any) => {
           <div className={styles.orakkiScreen} style={{ ...playerRect }}>
             <GamePlayer stream={stream} />
             <div className={styles.orakkiSwitch}>
-              <Icon
-                name='question'
-                width='3.5vh'
-                height='3.5vh'
-                fill='black'
-                onClick={() => {
-                  setGuideModalShow(true)
-                }}
-              />
-              <Icon name='coins' width='4.2vh' height='4.2vh' fill='black' />
-              <span className={styles.ticketsBadge}>{player.current?.lastCoins}</span>
+              <span>
+                <Icon
+                  name='question'
+                  width='3.5vh'
+                  height='3.5vh'
+                  fill='black'
+                  onClick={() => {
+                    setGuideModalShow(true)
+                  }}
+                />
+              </span>
+              <span className={styles.coinStatus}>
+                {player.current && (
+                  <CoinStatus
+                    coinsUsedInCharging={player.current.coinsUsedInCharging}
+                    chargingStartedAt={player.current.chargingStartedAt}
+                  />
+                )}
+              </span>
             </div>
           </div>
         </div>
@@ -202,6 +223,10 @@ export default Playing
 
 export const getStaticProps = wrapper.getStaticProps(async ({}) => {
   return {
-    props: { pageTitle: 'Live Game', ogImgUrl: consts.OG_DEFAULT_IMG_URL, ogDesc: consts.OG_DEFAULT_DESC },
+    props: {
+      pageTitle: 'Live Game',
+      ogImgUrl: consts.OG_DEFAULT_IMG_URL,
+      ogDesc: consts.OG_DEFAULT_DESC,
+    },
   }
 })

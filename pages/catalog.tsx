@@ -10,6 +10,7 @@ import Layout from '../components/layout'
 import PlayableGameCard from '../components/playable-game-card'
 import PlayerRegisterModal from '../components/player-register-modal'
 import PreparingGameCard from '../components/preparing-game-card'
+import CoinStatus from '../components/coin-status'
 
 import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
@@ -91,6 +92,18 @@ const Catalog = () => {
           />{' '}
           Oraksil
         </Navbar.Brand>
+        <Navbar.Collapse className='justify-content-end'>
+          <Navbar.Text>
+            <div style={{ height: '30px' }}>
+              {player.current && (
+                <CoinStatus
+                  coinsUsedInCharging={player.current.coinsUsedInCharging}
+                  chargingStartedAt={player.current.chargingStartedAt}
+                />
+              )}
+            </div>
+          </Navbar.Text>
+        </Navbar.Collapse>
       </Navbar>
       <Container fluid style={{ padding: '30px 60px' }}>
         <Row>
