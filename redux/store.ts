@@ -10,6 +10,8 @@ import { reducer as webrtcReducer } from './webrtc/reducers'
 import mySaga from './common/sagas'
 import webrtcSaga from './webrtc/sagas'
 
+const debug = process.env.NODE_ENV !== 'production'
+
 const rootReducer = combineReducers({
   common: commonReducer,
   webrtc: webrtcReducer,
@@ -19,17 +21,19 @@ export type RootState = ReturnType<typeof rootReducer>
 
 const sagaMiddleware = createSagaMiddleware()
 
-const composeEnhancers = composeWithDevTools({
-  // Specify name here, actionsBlacklist, actionsCreators and other options if needed
-})
+let middlewares = applyMiddleware(thunk, sagaMiddleware)
+if (debug) {
+  const composeEnhancers = composeWithDevTools({
+    // Specify name here, actionsBlacklist, actionsCreators and other options if needed
+  })
+  middlewares = composeEnhancers(middlewares)
+}
 
 export const makeStore: MakeStore<RootState> = () => {
-  const store: any = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk, sagaMiddleware)))
-
+  const store: any = createStore(rootReducer, middlewares)
   store.mySaga = sagaMiddleware.run(mySaga)
   store.webrtcSaga = sagaMiddleware.run(webrtcSaga)
-
   return store
 }
 
-export const wrapper = createWrapper<RootState>(makeStore, { debug: false })
+export const wrapper = createWrapper<RootState>(makeStore, { debug })

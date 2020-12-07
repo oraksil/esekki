@@ -5,7 +5,6 @@ export interface CommonState {
   player: {
     current: Player | null
     loaded: boolean
-    numCoins: number
   }
   game: {
     current: Game | null
@@ -87,8 +86,23 @@ export interface NewUserFeedbackFailed {
   payload: undefined
 }
 
-export const INCREMENT_COINS = 'INCREMENT_COINS'
-export interface IncrementCoins {
-  type: typeof INCREMENT_COINS
-  payload: number
+export const INSERT_COIN = 'INSERT_COIN'
+export interface InsertCoin {
+  type: typeof INSERT_COIN
+  payload: undefined
+}
+
+export const INSERT_COIN_OK = 'INSERT_COIN_OK'
+export interface InsertCoinOk {
+  type: typeof INSERT_COIN_OK
+  payload: {
+    coinsUsedInCharging: number
+    chargingStartedAt: number
+  }
+}
+
+export const INSERT_COIN_FAILED = 'INSERT_COIN_FAILED'
+export interface InsertCoinFailed {
+  type: typeof INSERT_COIN_FAILED
+  payload: undefined
 }

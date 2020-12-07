@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React from 'react'
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useRouter } from 'next/router'
@@ -17,6 +17,7 @@ import Layout from '../components/layout'
 import GamePlayer from '../components/game-player'
 import PlayerRegisterModal from '../components/player-register-modal'
 import GuideModal from '../components/guide-modal'
+import CoinStatus from '../components/coin-status'
 
 import styles from './playing.module.css'
 
@@ -67,8 +68,6 @@ const Playing = (props: any) => {
   const turnUsername = useSelector((state: RootState) => state.webrtc.turnUsername)
   const turnPassword = useSelector((state: RootState) => state.webrtc.turnPassword)
 
-  const coinsRef = useRef(player.numCoins)
-
   const setupResizeHandler = () => {
     const calculatePlayerRect = (windowHeight: number): PlayerRect => {
       const marginTop = windowHeight * PLAYER_PADDING_TOP_RATIO
@@ -87,16 +86,28 @@ const Playing = (props: any) => {
     const insertCoinKey = 49
     const key = evt.which | evt.key
     const isKeyDown = evt.type === 'keydown'
-    if (key === insertCoinKey && !isKeyDown) {
-      if (coinsRef.current > 0) {
-        dispatch(actions.incrementCoins(-1))
-      } else {
-        setCoinAlertShow(true)
+    if (key === insertCoinKey) {
+      if (isKeyDown) {
         return
       }
-    }
 
-    WebRTCSession.sendKeyInput(key, isKeyDown)
+      dispatch(
+        actions.insertCoin(
+          () => {
+            // emulate key down and up
+            WebRTCSession.sendKeyInput(key, true)
+            setTimeout(() => {
+              WebRTCSession.sendKeyInput(key, false)
+            }, 50)
+          },
+          () => {
+            setCoinAlertShow(true)
+          }
+        )
+      )
+    } else {
+      WebRTCSession.sendKeyInput(key, isKeyDown)
+    }
   }
 
   const setupKeyHandler = () => {
@@ -125,7 +136,7 @@ const Playing = (props: any) => {
       return
     }
 
-    coinsRef.current = player.numCoins
+    // coinsRef.current = player.current.lastCoins
 
     setModalShow(false)
 
@@ -166,17 +177,25 @@ const Playing = (props: any) => {
           <div className={styles.orakkiScreen} style={{ ...playerRect }}>
             <GamePlayer stream={stream} />
             <div className={styles.orakkiSwitch}>
-              <Icon
-                name='question'
-                width='3.5vh'
-                height='3.5vh'
-                fill='black'
-                onClick={() => {
-                  setGuideModalShow(true)
-                }}
-              />
-              <Icon name='coins' width='4.2vh' height='4.2vh' fill='black' />
-              <span className={styles.ticketsBadge}>{player.numCoins}</span>
+              <span>
+                <Icon
+                  name='question'
+                  width='3.5vh'
+                  height='3.5vh'
+                  fill='black'
+                  onClick={() => {
+                    setGuideModalShow(true)
+                  }}
+                />
+              </span>
+              <span className={styles.coinStatus}>
+                {player.current && (
+                  <CoinStatus
+                    coinsUsedInCharging={player.current.coinsUsedInCharging}
+                    chargingStartedAt={player.current.chargingStartedAt}
+                  />
+                )}
+              </span>
             </div>
           </div>
         </div>
@@ -204,6 +223,10 @@ export default Playing
 
 export const getStaticProps = wrapper.getStaticProps(async ({}) => {
   return {
-    props: { pageTitle: 'Live Game', ogImgUrl: consts.OG_DEFAULT_IMG_URL, ogDesc: consts.OG_DEFAULT_DESC },
+    props: {
+      pageTitle: 'Live Game',
+      ogImgUrl: consts.OG_DEFAULT_IMG_URL,
+      ogDesc: consts.OG_DEFAULT_DESC,
+    },
   }
 })

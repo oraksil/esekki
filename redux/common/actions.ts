@@ -170,9 +170,36 @@ export const newUserFeedback = (feedback: string) => async (dispatch: Dispatch) 
   }
 }
 
-export const incrementCoins = (delta: number) => {
+const insertCoinOk = (
+  coinsUsedInCharging: number,
+  chargingStartedAt: number
+): types.InsertCoinOk => {
   return {
-    type: types.INCREMENT_COINS,
-    payload: delta,
+    type: types.INSERT_COIN_OK,
+    payload: { coinsUsedInCharging, chargingStartedAt },
+  }
+}
+
+const insertCoinFailed = (): types.InsertCoinFailed => {
+  return {
+    type: types.INSERT_COIN_FAILED,
+    payload: undefined,
+  }
+}
+
+export const insertCoin = (okCallback: any, failedCallback: any) => async (dispatch: Dispatch) => {
+  try {
+    const jsend: Jsend = (await axios.post(`/api/v1/players/coins/use`)).data
+    if (jsend.status === 'success') {
+      const { coinsUsedInCharging, chargingStartedAt } = jsend.data
+      dispatch(insertCoinOk(coinsUsedInCharging, chargingStartedAt))
+      okCallback()
+    } else {
+      dispatch(insertCoinFailed())
+      failedCallback()
+    }
+  } catch (e) {
+    dispatch(insertCoinFailed())
+    failedCallback()
   }
 }

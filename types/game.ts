@@ -2,6 +2,8 @@ export interface Player {
   id: number
   name: string
   hash: string
+  coinsUsedInCharging: number
+  chargingStartedAt: number
 }
 
 export interface Pack {
@@ -10,9 +12,9 @@ export interface Pack {
   title: string
   maker: string
   description: string
-  max_players: number
-  poster_url: string
-  rom_name: string
+  maxPlayers: number
+  posterUrl: string
+  romName: string
 }
 
 export interface Game {
