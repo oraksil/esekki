@@ -12,6 +12,12 @@ class CustomDocument extends Document {
     return (
       <Html>
         <Head>
+          <script src='https://webrtc.github.io/adapter/adapter-latest.js'></script>
+        </Head>
+        <body>
+          <Main />
+          <NextScript />
+
           <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`} />
           <script
             dangerouslySetInnerHTML={{
@@ -24,11 +30,10 @@ class CustomDocument extends Document {
             }}
           />
 
-          <script src='https://webrtc.github.io/adapter/adapter-latest.js'></script>
-        </Head>
-        <body>
-          <Main />
-          <NextScript />
+          <script
+            data-ad-client='ca-pub-8360012973910726'
+            async
+            src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'></script>
         </body>
       </Html>
     )
@@ -40,8 +45,3 @@ export default CustomDocument
 // <script
 // type='text/javascript'
 // src='//imasdk.googleapis.com/js/sdkloader/ima3.js'></script>
-
-// <script
-// data-ad-client='ca-pub-8360012973910726'
-// async
-// src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'></script>
