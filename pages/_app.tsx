@@ -1,5 +1,5 @@
 import App, { AppInitialProps, AppContext } from 'next/app'
-import { wrapper } from '../redux/store'
+import { wrapper } from '../features/store'
 
 import { PlayerResolver } from '../lib/context'
 

@@ -1,13 +1,21 @@
 import axios from 'axios'
 import retry from 'async-retry'
 
+import { PayloadAction } from '@reduxjs/toolkit'
 import { fork, call, put, takeLatest } from 'redux-saga/effects'
-import { WebRTCSession } from '../../lib/webrtcsession'
 
-import * as types from './types'
-import { iceExchangeDone, sdpExchangeDone, mediaStreamOpen, dataChannelOpen } from './actions'
+import { WebRTCSession } from '../../lib/webrtcsession'
 import { SdpInfo, IceCandidate } from '../../types/signaling'
 import { Jsend } from '../../types/jsend'
+
+import {
+  setupSession,
+  iceExchangeDone,
+  sdpExchangeDone,
+  mediaStreamOpen,
+  dataChannelOpen,
+  SetupSessionParams
+} from './slices'
 
 const createPeerConnection = (turnUsername: string | null, turnPassword: string | null): RTCPeerConnection => {
   const iceServers = [{ urls: 'stun:stun.l.google.com:19302' }]
@@ -71,7 +79,7 @@ function* handleSdpExchange(peer: RTCPeerConnection, gameId: number, token: stri
 
 function* handleIceExchange(peer: RTCPeerConnection, gameId: number, token: string) {
   const iceExchange = () =>
-    new Promise(resolve => {
+    new Promise<void>(resolve => {
       peer.onicecandidate = evt => {
         if (evt.candidate) {
           // send my ice candidate to remote
@@ -134,7 +142,7 @@ function* handleIceExchange(peer: RTCPeerConnection, gameId: number, token: stri
 
 function* handleTrackStream(peer: RTCPeerConnection) {
   const handler = () =>
-    new Promise(resolve => {
+    new Promise<void>(resolve => {
       peer.ontrack = evt => {
         const stream = evt.streams[0]
         stream.onaddtrack = e => {
@@ -156,7 +164,7 @@ function* handleTrackStream(peer: RTCPeerConnection) {
 
 function* handleDataChannelOpen(peer: RTCPeerConnection) {
   const handler = () =>
-    new Promise(resolve => {
+    new Promise<void>(resolve => {
       let pingHandler: any
       const dc = peer.createDataChannel('message')
       dc.onopen = () => {
@@ -182,20 +190,20 @@ function* handleDataChannelOpen(peer: RTCPeerConnection) {
   yield put(dataChannelOpen())
 }
 
-function* setupSession(action: types.SetupSession) {
+function* handleSetupSession({ payload }: PayloadAction<SetupSessionParams>) {
   let peer!: RTCPeerConnection
 
   try {
-    const { turnUsername, turnPassword } = action.payload
+    const { turnUsername, turnPassword } = payload
     peer = createPeerConnection(turnUsername, turnPassword)
 
     yield fork(handleTrackStream, peer)
 
     yield fork(handleDataChannelOpen, peer)
 
-    yield call(handleSdpExchange, peer, action.payload.gameId, action.payload.joinToken)
+    yield call(handleSdpExchange, peer, payload.gameId, payload.joinToken)
 
-    yield call(handleIceExchange, peer, action.payload.gameId, action.payload.joinToken)
+    yield call(handleIceExchange, peer, payload.gameId, payload.joinToken)
   } catch (e) {
     console.log(e)
 
@@ -206,7 +214,7 @@ function* setupSession(action: types.SetupSession) {
 }
 
 function* webrtcSaga() {
-  yield takeLatest(types.SETUP_SESSION, setupSession)
+  yield takeLatest(setupSession.type, handleSetupSession)
 }
 
 export default webrtcSaga

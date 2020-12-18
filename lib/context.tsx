@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { RootState } from '../redux/store'
-import { getPlayer } from '../redux/common/actions'
+import { RootState } from '../features/store'
+import { getPlayer } from '../features/game/slices'
 
 const { Provider } = React.createContext({})
 

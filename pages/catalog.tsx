@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useRouter } from 'next/router'
-import { RootState, wrapper } from '../redux/store'
-import { getPacks, newPlayer, startNewGame, newUserFeedback } from '../redux/common/actions'
+import { RootState, wrapper } from '../features/store'
+import { getPacks, newPlayer, startNewGame, newUserFeedback } from '../features/game/slices'
 import { Pack } from '../types/game'
 
 import Head from 'next/head'

@@ -1,19 +1,21 @@
 import { createStore, applyMiddleware, combineReducers } from 'redux'
-import { MakeStore, createWrapper } from 'next-redux-wrapper'
 import createSagaMiddleware from 'redux-saga'
-import thunk from 'redux-thunk'
+import thunk, { ThunkAction } from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension'
 
-import { reducer as commonReducer } from './common/reducers'
-import { reducer as webrtcReducer } from './webrtc/reducers'
+import { MakeStore, createWrapper } from 'next-redux-wrapper'
+import { Action } from '@reduxjs/toolkit'
 
-import mySaga from './common/sagas'
+import gameReducer from './game/slices'
+import webrtcReducer from './webrtc/slices'
+
+import mySaga from './game/sagas'
 import webrtcSaga from './webrtc/sagas'
 
 const debug = process.env.NODE_ENV !== 'production'
 
 const rootReducer = combineReducers({
-  common: commonReducer,
+  common: gameReducer,
   webrtc: webrtcReducer,
 })
 
@@ -37,3 +39,6 @@ export const makeStore: MakeStore<RootState> = () => {
 }
 
 export const wrapper = createWrapper<RootState>(makeStore, { debug })
+
+export type Store = ReturnType<typeof makeStore>
+export type AppThunk = ThunkAction<void, RootState, unknown, Action<string>>

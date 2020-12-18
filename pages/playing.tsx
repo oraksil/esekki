@@ -8,9 +8,9 @@ import { Toast } from 'react-bootstrap'
 
 import { PlayerRect } from '../types/layout'
 import { WebRTCSession } from '../lib/webrtcsession'
-import { RootState, wrapper } from '../redux/store'
-import * as actions from '../redux/common/actions'
-import { setupSession } from '../redux/webrtc/actions'
+import { RootState, wrapper } from '../features/store'
+import * as actions from '../features/game/slices'
+import { setupSession } from '../features/webrtc/slices'
 
 import Icon from '../components/icon'
 import Layout from '../components/layout'
@@ -135,8 +135,6 @@ const Playing = (props: any) => {
       setModalShow(true)
       return
     }
-
-    // coinsRef.current = player.current.lastCoins
 
     setModalShow(false)
 

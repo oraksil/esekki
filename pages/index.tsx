@@ -1,6 +1,6 @@
 import React from 'react'
 import { ServerResponse } from 'http'
-import { wrapper } from '../redux/store'
+import { wrapper } from '../features/store'
 
 const Index = () => {
   return <React.Fragment>Landing.. must not reach here..</React.Fragment>
