@@ -14,15 +14,18 @@ import {
   sdpExchangeDone,
   mediaStreamOpen,
   dataChannelOpen,
-  SetupSessionParams
+  SetupSessionParams,
 } from './slices'
 
-const createPeerConnection = (turnUsername: string | null, turnPassword: string | null): RTCPeerConnection => {
-  const iceServers = [{ urls: 'stun:stun.l.google.com:19302' }]
+const createPeerConnection = (
+  turnUsername: string | null,
+  turnPassword: string | null
+): RTCPeerConnection => {
+  const iceServers = []
 
   if (turnUsername && turnUsername.length > 0) {
     iceServers.push({
-      urls: 'turn:35.216.52.55:3478',
+      urls: 'turn:35.216.52.55:3478?transport=tcp',
       username: turnUsername,
       credential: turnPassword,
     } as any)
