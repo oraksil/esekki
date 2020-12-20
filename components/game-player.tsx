@@ -10,6 +10,8 @@ interface Props {
   stream?: MediaStream
 }
 
+const NEED_TO_REFRESH_TIMEOUT = 30 * 1000
+
 const initVideoJsPlayer = (videoRef: RefObject<HTMLVideoElement>) => {
   const vjsOpts: VideoJsPlayerOptions = {
     autoplay: 'any',
@@ -33,11 +35,16 @@ const GamePlayer = (props: Props) => {
 
   const [vjsPlayer, setVjsPlayer] = useState<videojs.Player>()
   const [playerVeil, setPlayerVeil] = useState(true)
+  const [needToRefresh, setNeedToRefresh] = useState(false)
 
   useEffect(() => {
     const newPlayer = initVideoJsPlayer(videoRef)
 
     setVjsPlayer(newPlayer)
+
+    setTimeout(() => {
+      setNeedToRefresh(true)
+    }, NEED_TO_REFRESH_TIMEOUT)
 
     return () => {
       vjsPlayer?.dispose()
@@ -56,12 +63,20 @@ const GamePlayer = (props: Props) => {
     }
   }, [vjsPlayer, props.stream])
 
+  const progressElem = !needToRefresh ? (
+    <span>Loading...</span>
+  ) : (
+    <span style={{ cursor: 'pointer' }} onClick={() => window.location.reload(true)}>
+      <u>Please retry to refresh browser.</u>
+    </span>
+  )
+
   return (
     <div className={styles.playerContainer}>
       <div className={styles.playerVideoWrapper}>
         <video ref={videoRef} autoPlay={true} playsInline={true}></video>
       </div>
-      {playerVeil && <div className={styles.playerVeil}>Loading...</div>}
+      {playerVeil && <div className={styles.playerVeil}>{progressElem}</div>}
     </div>
   )
 }
