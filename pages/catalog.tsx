@@ -67,8 +67,8 @@ const Catalog = () => {
     setNewPlayerModalShow(false)
 
     if (selectedPack) {
-      dispatch(startNewGame(selectedPack.id))
       dispatch(resetSession())
+      dispatch(startNewGame(selectedPack.id))
     }
   }, [selectedPack, player])
 
