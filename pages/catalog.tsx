@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useRouter } from 'next/router'
 import { RootState, wrapper } from '../features/store'
 import { getPacks, newPlayer, startNewGame, newUserFeedback } from '../features/game/slices'
+import { resetSession } from '../features/webrtc/slices'
 import { Pack } from '../types/game'
 
 import Head from 'next/head'
@@ -67,6 +68,7 @@ const Catalog = () => {
 
     if (selectedPack) {
       dispatch(startNewGame(selectedPack.id))
+      dispatch(resetSession())
     }
   }, [selectedPack, player])
 

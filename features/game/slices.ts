@@ -71,11 +71,18 @@ const slice = createSlice({
     },
     canJoinGameOk: (state, { payload }: PayloadAction<Joinable>) => {
       const curGame = { ...state.game.current, id: payload.gameId }
-      state.game.current = curGame
+      state.game.current = curGame as Game
       state.game.joinToken = payload.token
+
+      const curPlayer = {
+        ...state.player.current,
+        turnUsername: payload.username,
+        turnPassword: payload.password,
+      }
+      state.player.current = curPlayer as Player
     },
     canJoinGameFailed: state => {
-        state.game.joinToken = null
+      state.game.joinToken = null
     },
     insertCoinOk: (state, { payload }: PayloadAction<CoinState>) => {
       if (state.player && state.player.current) {
@@ -86,7 +93,7 @@ const slice = createSlice({
     insertCoinFailed: state => {},
     newUserFeedbackOk: state => {},
     newUserFeedbackFailed: state => {},
-  }
+  },
 })
 
 const {
@@ -103,7 +110,7 @@ const {
   insertCoinOk,
   insertCoinFailed,
   newUserFeedbackOk,
-  newUserFeedbackFailed
+  newUserFeedbackFailed,
 } = slice.actions
 
 export const getPlayer = () => async (dispatch: Dispatch) => {

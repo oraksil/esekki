@@ -4,6 +4,8 @@ export interface Player {
   hash: string
   coinsUsedInCharging: number
   chargingStartedAt: number
+  turnUsername: string
+  turnPassword: string
 }
 
 export interface Pack {

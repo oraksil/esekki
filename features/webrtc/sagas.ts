@@ -17,6 +17,11 @@ import {
   SetupSessionParams,
 } from './slices'
 
+let TURNSERVER_URLS = 'turn:35.216.52.55:3478?transport=tcp'
+if (process.env.NEXT_PUBLIC_TURNSERVER_URLS) {
+  TURNSERVER_URLS = process.env.NEXT_PUBLIC_TURNSERVER_URLS
+}
+
 const createPeerConnection = (
   turnUsername: string | null,
   turnPassword: string | null
@@ -25,7 +30,7 @@ const createPeerConnection = (
 
   if (turnUsername && turnUsername.length > 0) {
     iceServers.push({
-      urls: 'turn:35.216.52.55:3478?transport=tcp',
+      urls: TURNSERVER_URLS,
       username: turnUsername,
       credential: turnPassword,
     } as any)

@@ -63,10 +63,7 @@ const Playing = (props: any) => {
 
   const player = useSelector((state: RootState) => state.common.player)
   const game = useSelector((state: RootState) => state.common.game)
-
   const streamOpen = useSelector((state: RootState) => state.webrtc.mediaStreamOpen)
-  const turnUsername = useSelector((state: RootState) => state.webrtc.turnUsername)
-  const turnPassword = useSelector((state: RootState) => state.webrtc.turnPassword)
 
   const setupResizeHandler = () => {
     const calculatePlayerRect = (windowHeight: number): PlayerRect => {
@@ -155,13 +152,20 @@ const Playing = (props: any) => {
   useEffect(() => {
     if (!streamOpen) {
       if (game.current && game.joinToken) {
-        dispatch(setupSession(game.current.id, game.joinToken, turnUsername, turnPassword))
+        dispatch(
+          setupSession(
+            game.current.id,
+            game.joinToken,
+            player.current?.turnUsername,
+            player.current?.turnPassword
+          )
+        )
       }
     } else {
       setStream(WebRTCSession.getMediaStream())
       setupKeyHandler()
     }
-  }, [game, streamOpen])
+  }, [game, player, streamOpen])
 
   return (
     <Layout>
