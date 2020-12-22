@@ -10,7 +10,6 @@ import Head from 'next/head'
 import Layout from '../components/layout'
 import PlayableGameCard from '../components/playable-game-card'
 import PlayerRegisterModal from '../components/player-register-modal'
-import PreparingGameCard from '../components/preparing-game-card'
 import CoinStatus from '../components/coin-status'
 
 import Container from 'react-bootstrap/Container'
@@ -120,6 +119,7 @@ const Catalog = () => {
               </div>
             ))}
         </Row>
+        {/**
         <Row>
           <h5 style={{ marginTop: '60px', marginBottom: '20px' }}>Coming Soon...</h5>
         </Row>
@@ -135,6 +135,7 @@ const Catalog = () => {
             <PreparingGameCard key={99} flip={true} onSuggest={handleUserFeedback} />
           </div>
         </Row>
+        **/}
       </Container>
       <PlayerRegisterModal show={newPlayerModalShow} onSubmit={handleNewPlayerSubmit} />
       <UserFeedbackModal
