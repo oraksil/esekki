@@ -17,7 +17,7 @@ import {
   SetupSessionParams,
 } from './slices'
 
-let TURNSERVER_URLS = 'turn:35.216.52.55:3478?transport=tcp'
+let TURNSERVER_URLS = 'turn:turn1.oraksil.fun:3478?transport=tcp'
 if (process.env.NEXT_PUBLIC_TURNSERVER_URLS) {
   TURNSERVER_URLS = process.env.NEXT_PUBLIC_TURNSERVER_URLS
 }
@@ -44,9 +44,7 @@ const createPeerConnection = (
 }
 
 function* handleSdpExchange(peer: RTCPeerConnection, gameId: number, token: string) {
-  const exchangeSdp = async (offerDesc: RTCSessionDescriptionInit) => {
-    await peer.setLocalDescription(offerDesc)
-
+  const exchangeSdp = async () => {
     const b64EncodedOffer = btoa(JSON.stringify(peer.localDescription))
     const payload = { token, sdp_offer: b64EncodedOffer }
 
@@ -69,14 +67,16 @@ function* handleSdpExchange(peer: RTCPeerConnection, gameId: number, token: stri
         offerToReceiveAudio: true,
       }
 
-      peer.createOffer(offerOpt).then(d => {
+      peer.createOffer(offerOpt).then(async d => {
+        await peer.setLocalDescription(d)
+
         // send my description to remote
         // and get remote answer via response,
         // and then set remote description
         const retryOpt = { retries: 40, minTimeout: 500, factor: 1 }
         retry((_bail, attempt) => {
           console.log(`retrying exchanging sdp at attempt ${attempt}`)
-          return exchangeSdp(d)
+          return exchangeSdp()
         }, retryOpt).then(resolve)
       })
     })
@@ -97,6 +97,10 @@ function* handleIceExchange(peer: RTCPeerConnection, gameId: number, token: stri
         }
       }
 
+      peer.onicecandidateerror = evt => {
+        console.log(evt)
+      }
+
       peer.oniceconnectionstatechange = evt => {
         if ((evt.target as RTCPeerConnection).iceConnectionState === 'connected') {
           resolve()
@@ -106,7 +110,7 @@ function* handleIceExchange(peer: RTCPeerConnection, gameId: number, token: stri
 
   let lastSeq = 0
 
-  const remoteIceCandidatesPoller = async () => {
+  const handleRemoteIce = async () => {
     // fetch remote ice candidates
     // and set them to peer connection
     const params = { token, last_seq: lastSeq }
@@ -138,12 +142,15 @@ function* handleIceExchange(peer: RTCPeerConnection, gameId: number, token: stri
     }
   }
 
-  const retryOpt = { retries: 30, minTimeout: 500, factor: 1 }
-  retry((_bail, attempt) => {
-    console.log(`retrying remote ice polling at attempt ${attempt}`)
-    return remoteIceCandidatesPoller()
-  }, retryOpt)
+  const remoteIceCandidatesPoller = () => {
+    const retryOpt = { retries: 30, minTimeout: 500, factor: 1 }
+    retry((_bail, attempt) => {
+      console.log(`retrying remote ice polling at attempt ${attempt}`)
+      return handleRemoteIce()
+    }, retryOpt)
+  }
 
+  yield fork(remoteIceCandidatesPoller)
   yield call(iceExchange)
   yield put(iceExchangeDone())
 }

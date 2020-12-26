@@ -7,7 +7,7 @@ COPY . /deploy
 RUN npm ci
 
 ENV NEXT_PUBLIC_API_BASEURL=https://api.oraksil.fun
-ENV NEXT_PUBLIC_TURNSERVER_URLS=turn:turn.oraksil.fun:3478?transport=tcp
+ENV NEXT_PUBLIC_TURNSERVER_URLS=turn:turn1.oraksil.fun:3478?transport=tcp
 RUN npm run build
 
 EXPOSE 3000
