@@ -168,7 +168,7 @@ const Playing = (props: any) => {
   }, [game, player, streamOpen])
 
   return (
-    <Layout>
+    <Layout footer={false}>
       <Head>
         <title>{pageTitle}</title>
         <meta property='og:image' content={ogImgUrl} />

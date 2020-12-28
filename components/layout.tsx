@@ -4,15 +4,16 @@ import Meta from './meta'
 
 type Props = {
   preview?: boolean
+  footer?: boolean
   children: React.ReactNode
 }
 
-const Layout = ({ children }: Props) => {
+const Layout = ({ footer = true, children }: Props) => {
   return (
     <React.Fragment>
       <Meta />
       <main>{children}</main>
-      <Footer />
+      {footer && <Footer />}
     </React.Fragment>
   )
 }

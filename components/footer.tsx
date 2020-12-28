@@ -1,11 +1,11 @@
 const footerStyle = {
   position: 'fixed',
-  height: '60px',
+  height: '50px',
   bottom: '0px',
   left: '0px',
   width: '100%',
   textAlign: 'center',
-  padding: '20px 0',
+  padding: '12px 0',
   backgroundColor: '#343a40',
   color: '#d6d6d6',
 } as React.CSSProperties
