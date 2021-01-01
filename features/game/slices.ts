@@ -2,6 +2,7 @@ import axios from 'axios'
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { Dispatch } from 'redux'
+import { HYDRATE } from 'next-redux-wrapper'
 
 import { Jsend } from '../../types/jsend'
 import { Pack, Game, Player, Joinable } from '../../types/game'
@@ -93,6 +94,11 @@ const slice = createSlice({
     insertCoinFailed: state => {},
     newUserFeedbackOk: state => {},
     newUserFeedbackFailed: state => {},
+  },
+  extraReducers: builder => {
+    builder.addCase(HYDRATE, (state, action: any) => {
+      state.packs = action.payload.common.packs
+    })
   },
 })
 
