@@ -8,6 +8,7 @@ import styles from './game-player.module.css'
 
 interface Props {
   stream?: MediaStream
+  progress: Number
 }
 
 const NEED_TO_REFRESH_TIMEOUT = 30 * 1000
@@ -63,8 +64,10 @@ const GamePlayer = (props: Props) => {
     }
   }, [vjsPlayer, props.stream])
 
+  useEffect(() => {}, [props.progress])
+
   const progressElem = !needToRefresh ? (
-    <span>Loading...</span>
+    <span>Loading... {props.progress}%</span>
   ) : (
     <span style={{ cursor: 'pointer' }} onClick={() => window.location.reload(true)}>
       <u>Please retry to refresh browser.</u>
