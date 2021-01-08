@@ -64,6 +64,7 @@ const Playing = (props: any) => {
   const player = useSelector((state: RootState) => state.common.player)
   const game = useSelector((state: RootState) => state.common.game)
   const streamOpen = useSelector((state: RootState) => state.webrtc.mediaStreamOpen)
+  const progress = useSelector((state: RootState) => state.webrtc.progress)
 
   const setupResizeHandler = () => {
     const calculatePlayerRect = (windowHeight: number): PlayerRect => {
@@ -177,7 +178,7 @@ const Playing = (props: any) => {
       <div className={styles.container}>
         <div className={styles.orakkiBox}>
           <div className={styles.orakkiScreen} style={{ ...playerRect }}>
-            <GamePlayer stream={stream} />
+            <GamePlayer stream={stream} progress={progress} />
             <div className={styles.orakkiSwitch}>
               <span>
                 <Icon

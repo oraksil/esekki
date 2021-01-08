@@ -9,10 +9,12 @@ export interface SetupSessionParams {
 
 interface WebRTCState {
   mediaStreamOpen: boolean
+  progress: Number
 }
 
 const webrtcState: WebRTCState = {
   mediaStreamOpen: false,
+  progress: 0,
 }
 
 const slice = createSlice({
@@ -27,8 +29,12 @@ const slice = createSlice({
         }
       },
     },
-    sdpExchangeDone: state => {},
-    iceExchangeDone: state => {},
+    sdpExchangeDone: state => {
+      state.progress = 50
+    },
+    iceExchangeDone: state => {
+      state.progress = 100
+    },
     mediaStreamOpen: state => {
       state.mediaStreamOpen = true
     },
