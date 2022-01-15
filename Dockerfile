@@ -6,6 +6,7 @@ COPY . /deploy
 
 RUN npm ci
 
+ENV PUBLIC_PROXY_HOST=http://localhost:8000
 ENV NEXT_PUBLIC_API_BASEURL=http://localhost:8000
 ENV NEXT_PUBLIC_TURNSERVER_URLS=turn:localhost:3478?transport=tcp
 RUN npm run build

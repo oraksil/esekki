@@ -1,18 +1,21 @@
 /* eslint-disable no-console */
+const env = process.env.NODE_ENV
+const dev = env !== 'production'
+require('dotenv').config({path: dev ? '.env.local' : '.env.production'})
+
 const express = require('express')
 const next = require('next')
 
-const devProxy = {
-  '/api': {
-    target: 'http://localhost:8000/',
-    pathRewrite: { '^/api': '/api' },
+const { createProxyMiddleware } = require('http-proxy-middleware')
+
+const proxyOptions = {
+  '/public': {
+    target: process.env.PUBLIC_PROXY_HOST,
     changeOrigin: true,
   },
 }
 
 const port = parseInt(process.env.PORT, 10) || 3000
-const env = process.env.NODE_ENV
-const dev = env !== 'production'
 const app = next({
   dir: '.', // base directory where everything is, could move to src later
   dev,
@@ -27,12 +30,9 @@ app
     server = express()
 
     // Set up the proxy.
-    if (dev && devProxy) {
-      const { createProxyMiddleware } = require('http-proxy-middleware')
-      Object.keys(devProxy).forEach(function (context) {
-        server.use(context, createProxyMiddleware(devProxy[context]))
-      })
-    }
+    Object.keys(proxyOptions).forEach(function (context) {
+      server.use(context, createProxyMiddleware(proxyOptions[context]))
+    })
 
     // Default catch-all handler to allow Next.js to handle all other routes
     server.all('*', (req, res) => handle(req, res))
@@ -44,7 +44,7 @@ app
       console.log(`> Ready on port ${port} [${env}]`)
     })
   })
-  .catch(err => {
+  .catch(e => {
     console.log('An error occurred, unable to start the server')
     console.log(e)
   })
